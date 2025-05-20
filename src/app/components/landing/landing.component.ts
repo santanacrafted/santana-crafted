@@ -173,7 +173,7 @@ export class LandingComponent implements OnInit {
     quote: string;
     avatar: string;
   }[] = [];
-  loadCount = 12; // Number to show at a time
+  loadCount = 8; // Number to show at a time
 
   ngOnInit(): void {
     this.visibleTestimonials = this.testimonials.slice(0, this.loadCount);

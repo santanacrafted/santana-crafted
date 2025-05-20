@@ -40,8 +40,12 @@ import { TranslateService } from '@ngx-translate/core';
     >
       <div
         [ngClass]="isScrolled ? 'h-0' : 'h-11'"
-        class="h-11 w-full bg-[#def071] transition-[height] duration-300 ease-in-out"
-      ></div>
+        class="h-11 w-full bg-[#def071] transition-[height] duration-300 ease-in-out justify-center flex overflow-hidden"
+      >
+        <a class="flex h-6 w-fit relative top-2 font-bold"
+          >Sale on all templates 50% OFF</a
+        >
+      </div>
 
       <div
         class="max-w-[1800px] px-20 mx-auto w-full py-4"
@@ -216,6 +220,6 @@ export class HeaderComponent {
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
-    this.isScrolled = window.scrollY > 10;
+    this.isScrolled = window.scrollY > 25;
   }
 }

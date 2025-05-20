@@ -43,7 +43,7 @@ export const NavigationConfig: NavItem[] = [
   {
     type: 'link',
     label: 'NAVIGATION_LINK_3',
-    path: '/Features',
+    path: '/features',
     labelColor: 'text-[#000]',
     hoverLabelColor: 'hover:!text-[#e1b609] transition duration-200',
   },
