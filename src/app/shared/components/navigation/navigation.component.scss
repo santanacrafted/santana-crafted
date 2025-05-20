@@ -1,0 +1,80 @@
+nav.vertical {
+    display: flex;
+    flex-direction: column;
+}
+
+nav.horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    position: relative;
+}
+
+.nav-heading {
+    font-weight: bold;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.nav-link-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.nav-child-link {
+    display: block;
+    text-decoration: none;
+    padding-left: 1.5rem;
+    white-space: nowrap;
+}
+
+/* Horizontal layout: Hide children by default */
+nav.horizontal .nav-children {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+    z-index: 1000;
+    flex-direction: column;
+}
+
+/* Show dropdown on hover */
+nav.horizontal .nav-link-wrapper.has-children:hover .nav-children {
+    display: flex;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    nav.horizontal {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav.horizontal .nav-children {
+        position: static;
+        display: none;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    nav.horizontal .nav-link-wrapper.has-children:hover .nav-children {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.vertical {
+    color: #fff !important;
+}

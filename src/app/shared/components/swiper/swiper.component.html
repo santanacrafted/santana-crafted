@@ -1,0 +1,50 @@
+<div [ngClass]="swiperheight" class="relative">
+  <!-- Prev Button -->
+  <button *ngIf="!infinite && !isAtBeginning && swiperConfig.navigation" class="absolute left-0 top-0 bottom-0 z-10 translate-x-[-10px]"
+    (click)="goPrev()">
+    <i class="material-icons text-black text-3xl">arrow_back</i>
+  </button>
+  <!-- Next Button -->
+  <button *ngIf="!infinite && !isAtEnd && swiperConfig.navigation" class="absolute right-0 top-0 bottom-0 z-10 translate-x-[10px]"
+    (click)="goNext()">
+    <i class="material-icons text-black text-3xl">arrow_forward</i>
+  </button>
+  <swiper-container #swiper appSwiper [config]="swiperConfig" (swiperslidechange)="slideChange($event)"
+    [ngClass]="{'cards': type === 'cards'}" class="swiper h-full" init="false">
+    <ng-container *ngFor="let item of items; let i = index">
+      <swiper-slide class="relative w-full" [ngClass]="swiperheight">
+        <ng-container *ngIf="type === 'image'">
+          <div [style.opacity]="item.slideOpacity || '0'" class="absolute inset-0 bg-black pointer-events-none"></div>
+
+          <img [src]="item.coverImage" [alt]="item.title[lang]" class="w-full h-full object-cover object-center bg-black" />
+
+          <div *ngIf="showImageCaption && i === activeIndex && showImageCaption"
+            class="absolute w-full h-full px-4 text-white flex items-center justify-center z-10 top-0"
+            [ngClass]="getCaptionClasses(item.captionPosition || defaultCaptionPosition)">
+            <div *ngIf="captionVisible" [@slideUpCaption]="captionState"
+              [ngClass]="item.textAlignment || captionTextAlignment" class="drop-shadow-md z-20">
+              <h5 [ngClass]="
+              item.titleFontClasses ||
+              'text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold leading-snug'
+            ">
+                {{ item.title[lang] | translate }}
+              </h5>
+              <p [ngClass]="
+              item.descriptionFontClasses ||
+              'text-sm sm:text-base md:text-lg text-gray-200 mt-2'
+            ">
+                {{ item.description[lang] | translate }}
+              </p>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="type === 'cards'">
+          <app-info-card [image]="item.coverImage" [title]="item.title[lang] | translate"
+            class="w-full rounded-2xl overflow-hidden flex content-center justify-center"
+            [description]="item.description[lang] | translate" [buttonLabel]="'LEARN_MORE_BTN' | translate"
+            [buttonRoute]="item.route" [badge]="item.badge" [data]="item" [icon]="item.icon"></app-info-card>
+        </ng-container>
+      </swiper-slide>
+    </ng-container>
+  </swiper-container>
+</div>

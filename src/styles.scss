@@ -1,1 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Titillium Web';
+    src: url('/assets/fonts/Titillium/TitilliumWeb-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Titillium Web Light';
+    src: url('/assets/fonts/Titillium/TitilliumWeb-Light.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  body { margin: 0; font-family: 'Titillium Web', Roboto, "Helvetica Neue", sans-serif;  }

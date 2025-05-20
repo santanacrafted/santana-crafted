@@ -1,0 +1,99 @@
+/* Target the shadow DOM parts exposed by Swiper */
+.swiper::part(button-next),
+.swiper::part(button-prev) {
+  color: #fff;
+  /* or use your Tailwind color value here */
+  font-size: 1.5rem;
+  /* optional: size */
+}
+
+.swiper-wrapper {
+  will-change: transform;
+}
+
+@media only screen and (max-width: 600px) {
+
+  .swiper::part(button-next),
+  .swiper::part(button-prev) {
+    display: none;
+  }
+}
+
+.swiper {
+  width: 100%;
+
+  &.cards {
+    width: calc(100% - 80px);
+
+    @media only screen and (max-width: 600px) {
+      width: calc(100% - 60px);
+
+    }
+  }
+}
+
+.caption-top-left {
+  top: 20px;
+  left: 20px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.caption-top-center {
+  top: 20px;
+  left: 0;
+  right: 0;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.caption-top-right {
+  top: 20px;
+  right: 20px;
+  align-items: flex-start;
+  justify-content: right;
+}
+
+.caption-center-left {
+  top: 0;
+  left: 20px;
+  align-items: center;
+  justify-content: left;
+}
+
+.caption-center {
+  top: 0;
+  left: 0;
+  right: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.caption-center-right {
+  top: 0;
+  right: 20px;
+  align-items: center;
+  justify-content: right;
+}
+
+.caption-bottom-left {
+  bottom: 20px;
+  left: 20px;
+  align-items: flex-end;
+  justify-content: left;
+}
+
+.caption-bottom-center {
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.caption-bottom-right {
+  bottom: 20px;
+  right: 20px;
+  align-items: flex-end;
+  justify-content: right;
+}

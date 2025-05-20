@@ -1,0 +1,108 @@
+<section class="relative overflow-hidden bg-cover flex max-w-[1800px] m-auto">
+  <!-- Hero Content -->
+  <div class="w-1/2 relative mx-auto px-6 md:px-12 py-20 text-[#00140f] md:pl-20">
+    <div class="flex flex-col max-w-[327px] md:max-w-[560px] lg:max-w-[560px]">
+      <h1 class="text-4xl md:text-6xl font-bold mb-6">
+        Build Faster with SantanaCrafted
+      </h1>
+      <p class="text-lg md:text-xl  text-[#003d2e] max-w-3xl mx-auto mb-10">
+        Professionally designed Angular templates to help developers and churches launch stunning, responsive websites in record time.
+      </p>
+      <div class="flex flex-col md:flex-row justify-start gap-4">
+        <app-button [type]="'link'" [borderRadius]="'1rem'" [path]="'/templates'" class="flex justify-center content-center"
+        [defaultClasses]="'hover:!bg-[#014d3d] transition text-lg'" [padding]="'.7rem 1.5rem'"
+        [backgroundColor]="'#003d2e'" [label]="('Browse Templates' | translate)"></app-button>
+      </div>
+    </div>
+  </div>
+  <div class="flex justify-start w-1/2 relative text-center text-gray-800 content-start ">
+    <div [style.backgroundImage]="'url(' + backgroundImg + ')'" class="bg-cover bg-no-repeat w-[93%] h-full bg-center"></div>
+  </div>
+</section>
+
+<section class="bg-white text-[#00140f]">
+  <!-- Feature Section -->
+  <div class="bg-[#ddf0711f] py-5 pt-10 px-6 md:px-0">
+    <div class="mx-auto text-center">
+      <div class="flex justify-center">
+        <h2 class="text-3xl md:text-4xl font-semibold text-[#003d2e] px-3">Why</h2>
+        <img
+        [style.height.px]="50"
+        *ngIf="logoUrl"
+        [src]="logoUrl"
+        alt="Logo"
+        class="w-auto h-10 relative bottom-1"
+      />
+      <h2 class="text-3xl md:text-4xl font-semibold text-[#003d2e] px-3">?</h2>
+      </div>
+      <div class="w-full justify-center flex object-center">
+        <div class="overflow-hidden relative w-full py-6 max-w-[2000px]">
+          <div class="marquee-track flex gap-6 w-max animate-marquee">
+            <!-- Original cards -->
+            <ng-container *ngFor="let card of cards">
+              <div class="bg-white/60 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-gray-200 w-96 transition transform hover:scale-[1.05] hover:shadow-lg duration-300">
+                <h3 class="text-xl font-semibold mb-2 text-[#003d2e]">{{ card.title[lang] | translate }}</h3>
+                <p class="text-gray-700">{{ card.description[lang] | translate }}</p>
+              </div>
+            </ng-container>
+        
+            <!-- Duplicate cards -->
+            <ng-container *ngFor="let card of cards">
+              <div class="bg-white/60 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-gray-200 w-96">
+                <h3 class="text-xl font-semibold mb-2 text-[#003d2e]">{{ card.title[lang] | translate }}</h3>
+                <p class="text-gray-700">{{ card.description[lang] | translate }}</p>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+<section class="bg-white">
+  <div class="text-gray-800 py-16 px-6 md:px-12 text-center max-w-[1800px] m-auto">
+  </div>
+</section>
+<section class="bg-[#f8fdf9] py-20 px-6 md:px-12 text-center text-[#00140f]">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-6 text-[#003d2e]">
+      What Developers Are Saying
+    </h2>
+    <p class="text-lg text-[#003d2e] mb-12 max-w-2xl mx-auto">
+      Hear how SantanaCrafted templates have helped others build faster and launch with confidence.
+    </p>
+
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <ng-container *ngFor="let testimonial of visibleTestimonials">
+        <div class="bg-white shadow-md rounded-2xl p-6 border border-gray-100 transition hover:shadow-lg">
+          <p class="text-gray-700 italic mb-4">“{{ testimonial.quote }}”</p>
+          <div class="flex items-center justify-center">
+            <div class="text-center">
+              <h4 class="font-semibold text-[#003d2e]">{{ testimonial.name }}</h4>
+              <span class="text-sm text-gray-500">{{ testimonial.title }}</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    
+    <!-- Load More Button -->
+    <div class="mt-10 text-center" *ngIf="visibleTestimonials.length < testimonials.length">
+      <app-button (click)="loadMore()" [type]="'button'" [borderRadius]="'1rem'" [path]="'/templates'" class="flex justify-center content-center"
+      [defaultClasses]="'hover:!bg-[#014d3d] transition text-lg'" [padding]="'.7rem 1.5rem'"
+      [backgroundColor]="'#003d2e'" [label]="('Load More' | translate)"></app-button>
+    </div>
+    
+  </div>
+</section>
+    <!-- CTA Section -->
+<section class="bg-white">
+    <div class="text-gray-800 py-16 px-6 md:px-12 text-center max-w-[1800px] m-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Build Your Next Website?</h2>
+      <p class="text-lg mb-8">Explore our growing collection of Angular templates designed to help you move fast and look great.</p>
+      <app-button [type]="'link'" [borderRadius]="'1rem'" [path]="'/templates'" class="flex justify-center content-center"
+      [defaultClasses]="'hover:!bg-[#014d3d] transition text-lg'" [padding]="'.7rem 1.5rem'"
+      [backgroundColor]="'#003d2e'" [label]="('View Templates' | translate)"></app-button>
+    </div>
+</section>
