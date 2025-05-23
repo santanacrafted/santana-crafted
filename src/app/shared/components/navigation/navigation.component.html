@@ -1,37 +1,65 @@
-<nav class="z-[1001]" [ngClass]="layoutClasses" [style.fontFamily]="settings.fontFamily">
+<nav
+  class="z-[1001]"
+  [ngClass]="layoutClasses"
+  [style.fontFamily]="settings.fontFamily"
+>
   <ng-container *ngFor="let item of navItems">
-    <div *ngIf="item.type === 'heading'" class="text-gray-700 mt-6 mb-2 font-bold"
-      [ngStyle]="{ 'font-size': settings.headingFontSize }">
-      {{ item.label |translate }}
+    <div
+      *ngIf="item.type === 'heading'"
+      class="text-gray-700 mt-6 mb-2 font-bold"
+      [ngStyle]="{ 'font-size': settings.headingFontSize }"
+    >
+      {{ item.label | translate }}
     </div>
     <div *ngIf="item.type === 'link'" class="relative group">
-
       <!-- Parent Link -->
-      <a [routerLink]="item.path" (click)="onNavigationClicked.emit()" class="flex items-center gap-2 text-gray-800 hover:text-[#0d9488]-500 transition-colors font-light"
+      <a
+        [routerLink]="item.path"
+        (click)="onNavigationClicked.emit()"
+        class="flex items-center gap-2 text-gray-800 hover:text-[#0d9488]-500 transition-colors font-light"
         [ngStyle]="{
              'font-size': settings.labelFontSize,
              'padding': settings.linkPadding,
-           }"   
-           [ngClass]="[item.labelColor, item.hoverLabelColor, item.hoverLinkAnimation !== undefined ? item.hoverLinkAnimation : '', layout === 'vertical' ? 'vertical' : '']"
->
+           }"
+        [ngClass]="[
+          item.labelColor,
+          item.hoverLabelColor,
+          item.hoverLinkAnimation !== undefined ? item.hoverLinkAnimation : '',
+          layout === 'vertical' ? 'vertical' : ''
+        ]"
+      >
         <i *ngIf="item.icon" class="material-icons">{{ item.icon }}</i>
-          {{ item.label | translate }}
+        {{ item.label | translate }}
+        <span
+          *ngIf="item.label === 'Cart' && cartCount > 0"
+          class="bg-[#e0e133] text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm"
+        >
+          {{ cartCount }}
+        </span>
       </a>
 
       <!-- Children Links (Conditional) -->
       <!-- Todo animation drodown is not working here -->
-      <div *ngIf="item.children?.length" [@dropdown] [ngClass]="getChildrenClasses()">
-        <a *ngFor="let child of item.children" [routerLink]="child.path" [ngClass]="[child.labelColor]" (click)="onNavigationClicked.emit()"
+      <div
+        *ngIf="item.children?.length"
+        [@dropdown]
+        [ngClass]="getChildrenClasses()"
+      >
+        <a
+          *ngFor="let child of item.children"
+          [routerLink]="child.path"
+          [ngClass]="[child.labelColor]"
+          (click)="onNavigationClicked.emit()"
           class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#0d9488]-600 transition-colors whitespace-nowrap"
           [ngStyle]="{
                'font-size': settings.labelFontSize,
-             }" [ngClass]="[layout === 'vertical' ? 'vertical' : '']">
+             }"
+          [ngClass]="[layout === 'vertical' ? 'vertical' : '']"
+        >
           <i *ngIf="child.icon" class="material-icons">{{ child.icon }}</i>
           {{ child.label | translate }}
         </a>
       </div>
-
     </div>
-
   </ng-container>
 </nav>

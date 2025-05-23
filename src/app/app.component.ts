@@ -21,22 +21,16 @@ export class AppComponent {
   footerSections: FooterSection[] = [
     {
       title: 'FOOTER_QUICK_LINK_HEADER',
-      links: [
-        { label: 'FOOTER_QUICK_LINK_2', path: '/give' },
-        { label: 'FOOTER_QUICK_LINK_3', path: '/contact' },
-        { label: 'FOOTER_QUICK_LINK_4', path: '/kids-programs' },
-      ],
+      links: [{ label: 'FOOTER_QUICK_LINK_3', path: '/contact' }],
     },
     {
       title: 'FOOTER_SOCIAL_MEDIA_HEADER',
       links: [
-        { label: 'FOOTER_SOCIAL_MEDIA_LINK_1' },
         {
           label: 'FOOTER_SOCIAL_MEDIA_LINK_2',
           path: 'https://www.youtube.com/@SantanaCrafted',
           external: true,
         },
-        { label: 'FOOTER_SOCIAL_MEDIA_LINK_3' },
       ],
     },
     {

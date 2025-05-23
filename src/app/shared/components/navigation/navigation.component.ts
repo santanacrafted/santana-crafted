@@ -8,6 +8,7 @@ import {
 import { NavigationSettings } from '../../../config/navigation/navigation-settings.config';
 import { dropdownAnimation } from '../../animations/dropdown.animation';
 import { TranslateModule } from '@ngx-translate/core';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-navigation',
@@ -22,7 +23,7 @@ export class NavigationComponent {
   settings = NavigationSettings;
   @Input() layout?: string;
   @Output() onNavigationClicked = new EventEmitter<any>();
-
+  cartCount = 0;
   show = true;
 
   // Layout class based on settings
@@ -36,6 +37,14 @@ export class NavigationComponent {
         ? 'flex flex-wrap items-center gap-4 md:gap-8'
         : 'flex flex-col';
     }
+  }
+
+  constructor(private cartService: CartService) {}
+
+  ngOnInit() {
+    this.cartService.cartItems$.subscribe((items) => {
+      this.cartCount = items.length;
+    });
   }
 
   // Conditional children dropdown behavior

@@ -1,1 +1,93 @@
-<p>contact works!</p>
+<section class="bg-[#fefcf8] py-20 px-6 md:px-12">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-start">
+    <!-- Info Section -->
+    <div>
+      <h2 class="text-4xl font-bold text-[#003d2e] mb-4">Get in Touch</h2>
+      <p class="text-gray-600 mb-6 text-lg">
+        Have questions about a template or custom work? We’d love to hear from
+        you.
+      </p>
+
+      <div class="space-y-4 text-gray-700">
+        <p>
+          📧 <strong>Email:</strong>
+          <a
+            href="mailto:hello@santanacrafted.com"
+            class="text-[#003d2e] hover:underline"
+            >{{ " santanacrafted@gmail.com" }}</a
+          >
+        </p>
+        <p>
+          📍 <strong>Location:</strong> Jacksonville, FL · Serving clients
+          worldwide
+        </p>
+        <div class="flex gap-4 pt-4">
+          <!-- Replace with real links -->
+          <a
+            href="#"
+            aria-label="Instagram"
+            class="text-[#003d2e] hover:text-[#e0e133] text-xl"
+          >
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a
+            href="#"
+            aria-label="Twitter"
+            class="text-[#003d2e] hover:text-[#e0e133] text-xl"
+          >
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a
+            href="#"
+            aria-label="GitHub"
+            class="text-[#003d2e] hover:text-[#e0e133] text-xl"
+          >
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="bg-white rounded-2xl shadow p-8">
+      <form (ngSubmit)="onSubmit()" [formGroup]="contactForm" class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Name</label>
+          <input
+            type="text"
+            formControlName="name"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#003d2e] focus:border-[#003d2e]"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Email</label>
+          <input
+            type="email"
+            formControlName="email"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#003d2e] focus:border-[#003d2e]"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Message</label>
+          <textarea
+            rows="5"
+            formControlName="message"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#003d2e] focus:border-[#003d2e]"
+            required
+          ></textarea>
+        </div>
+
+        <button
+          type="submit"
+          class="bg-[#003d2e] text-white px-6 py-2 rounded-md hover:bg-[#001f18]"
+        >
+          Send Message
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

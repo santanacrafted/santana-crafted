@@ -67,6 +67,6 @@ export const NavigationConfig: NavItem[] = [
     icon: 'shopping_cart',
     path: '/cart',
     labelColor: 'text-[#000]',
-    hoverLabelColor: 'hover:!text-[#e1b609] transition duration-200',
+    hoverLabelColor: 'hover:!text-[#000] transition duration-200',
   },
 ];

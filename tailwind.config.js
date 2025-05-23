@@ -12,7 +12,12 @@ module.exports = {
           '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-50%)' },
         }
-      }
+      },
+      screens: {
+        'mobile-se': '375px',
+        'mobile': '400px',
+        'minitablet': '535px',
+      },
     },
   },
   plugins: [],

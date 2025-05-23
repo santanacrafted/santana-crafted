@@ -1,4 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   SwiperComponent,
   SlideItems,
@@ -13,7 +20,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',
 })
-export class LandingComponent implements OnInit {
+export class LandingComponent implements OnInit, AfterViewInit {
   lang: 'en' | 'es' = 'en';
   logoUrl = '/assets/icons/SantanaCrafted-logo.png';
   backgroundImg: string = '/assets/images/devices-mockups.png';
@@ -174,9 +181,141 @@ export class LandingComponent implements OnInit {
     avatar: string;
   }[] = [];
   loadCount = 8; // Number to show at a time
+  @ViewChild('myVideo') videoRef!: ElementRef<HTMLVideoElement>;
+  @ViewChild('adBanner') adBannerRef!: ElementRef;
+  @ViewChild('videoSection') videoSection!: ElementRef<HTMLElement>;
 
+  isVideoInView = false;
+  videoEnded = false;
+  videoIsPaused: boolean = false;
+  videoHasBeenPlayed: boolean = false;
+  videoAlreadyWatched: boolean = false;
+  playVideoBtn: 'playing' | 'stopped' = 'stopped';
+  videoUrl =
+    'https://video-previews.elements.envatousercontent.com/h264-video-previews/925e4d92-7248-4ef4-8c46-d36e7687b79c/57614821.mp4';
+
+  constructor(private cd: ChangeDetectorRef) {}
   ngOnInit(): void {
     this.visibleTestimonials = this.testimonials.slice(0, this.loadCount);
+  }
+
+  ngAfterViewInit(): void {
+    // Don't auto-play if video has already been watched
+    this.videoAlreadyWatched = localStorage.getItem('videoWatched') === 'true';
+    const target = this.videoRef.nativeElement;
+    const offsetTop = target.getBoundingClientRect().top + window.scrollY;
+    const videoEl = this.videoRef.nativeElement;
+
+    // Scroll observer
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (this.videoIsPaused === true || this.videoAlreadyWatched) return;
+        this.isVideoInView = entry.isIntersecting && !this.videoEnded;
+
+        if (this.isVideoInView) {
+          this.playWithSound();
+          this.videoHasBeenPlayed = true;
+          this.videoIsPaused = false;
+          window.scrollTo({
+            top: offsetTop - 82,
+            behavior: 'smooth',
+          });
+        } else {
+          if (this.videoHasBeenPlayed) {
+            this.closeVideo();
+          }
+        }
+      },
+      { threshold: 0.7 }
+    );
+
+    observer.observe(videoEl);
+
+    // Video end handler
+    videoEl.addEventListener('ended', () => {
+      this.videoEnded = true;
+      this.isVideoInView = false;
+      this.playVideoBtn = 'stopped';
+      localStorage.setItem('videoWatched', 'true'); // ✅ persist watched flag
+    });
+  }
+
+  playWithSound(): void {
+    const videoEl = this.videoRef.nativeElement;
+    const offsetTop = videoEl.getBoundingClientRect().top + window.scrollY;
+
+    this.videoIsPaused = false;
+    this.videoEnded = false;
+    this.isVideoInView = true;
+    this.cd.detectChanges();
+    // Scroll to video
+    window.scrollTo({
+      top: offsetTop - 82,
+      behavior: 'smooth',
+    });
+
+    // Start with volume = 0 and unmute
+    videoEl.volume = 0;
+    videoEl.muted = false;
+
+    // Try to play the video
+    videoEl
+      .play()
+      .then(() => {
+        this.playVideoBtn = 'playing';
+        // Fade in audio over 500ms
+        const fadeDuration = 2000; // ms
+        const interval = 50; // ms
+        const steps = fadeDuration / interval;
+        const volumeStep = 1 / steps;
+
+        let currentVolume = 0;
+
+        const fadeIn = setInterval(() => {
+          currentVolume += volumeStep;
+
+          if (currentVolume >= 1) {
+            videoEl.volume = 1;
+            clearInterval(fadeIn);
+          } else {
+            videoEl.volume = currentVolume;
+          }
+        }, interval);
+      })
+      .catch((err) => {
+        console.warn('Video play failed:', err);
+      });
+  }
+
+  closeVideo(): void {
+    const videoEl = this.videoRef.nativeElement;
+    const fadeDuration = 500; // total time in ms
+    const interval = 50; // time between steps
+    const steps = fadeDuration / interval;
+    const volumeStep = videoEl.volume / steps;
+    this.videoIsPaused = true;
+    this.videoEnded = true;
+    let currentVolume = videoEl.volume;
+    this.playVideoBtn = 'stopped';
+
+    const fadeOut = setInterval(() => {
+      currentVolume -= volumeStep;
+
+      if (currentVolume <= 0) {
+        videoEl.volume = 0;
+        videoEl.pause();
+        if (!this.isVideoInView) {
+          videoEl.currentTime = 0;
+        }
+        videoEl.muted = true;
+        clearInterval(fadeOut);
+
+        // Restore volume for next play
+        videoEl.volume = 1;
+      } else {
+        videoEl.volume = currentVolume;
+      }
+    }, interval);
   }
 
   loadMore(): void {

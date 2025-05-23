@@ -9,6 +9,13 @@ import { FeaturesComponent } from './components/features/features.component';
 export const routes: Routes = [
   { path: '', component: LandingComponent },
   { path: 'templates', component: TemplatesComponent },
+  {
+    path: 'template/:id',
+    loadComponent: () =>
+      import('./components/template-detail/template-detail.component').then(
+        (m) => m.TemplateDetailComponent
+      ),
+  },
   { path: 'features', component: FeaturesComponent },
   { path: 'pricing', component: PricingComponent },
   { path: 'contact', component: ContactComponent },

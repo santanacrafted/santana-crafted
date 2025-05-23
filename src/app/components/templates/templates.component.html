@@ -1,1 +1,159 @@
-<p>templates works!</p>
+<section class="bg-white py-20">
+  <div>
+    <h2 class="text-4xl font-bold text-[#003d2e] mb-6 text-center">
+      Explore Our Templates
+    </h2>
+
+    <!-- Sticky Filter Wrapper -->
+    <div
+      #filterBar
+      [ngClass]="isSticky ? 'shadow-2xl !top-0' : 'shadow-sm'"
+      class="w-full z-50 sticky top-4 bg-white py-4 px-4 mb-10 shadow-sm transition-shadow duration-300"
+    >
+      <div
+        class="flex flex-wrap justify-between items-center gap-6 max-w-7xl mx-auto"
+      >
+        <!-- Filters -->
+        <div class="flex flex-wrap justify-center gap-6 flex-1">
+          <!-- Category Filter -->
+          <div class="flex flex-wrap gap-2">
+            <span
+              class="text-sm font-semibold text-[#003d2e] w-full text-center"
+              >Category:</span
+            >
+            <button
+              *ngFor="let cat of categories"
+              (click)="filterCategory(cat)"
+              class="px-4 py-1 rounded-full text-sm border transition-all duration-200 ease-in-out transform hover:scale-105"
+              [ngClass]="{
+                'bg-[#003d2e] text-white border-[#003d2e]':
+                  selectedCategory === cat,
+                'bg-white text-[#003d2e] border-gray-300 hover:bg-gray-100':
+                  selectedCategory !== cat
+              }"
+            >
+              {{ cat }}
+            </button>
+          </div>
+
+          <!-- Tier Filter -->
+          <div class="flex flex-wrap gap-2">
+            <span
+              class="text-sm font-semibold text-[#003d2e] w-full text-center"
+              >Tier:</span
+            >
+            <button
+              *ngFor="let tier of tiers"
+              (click)="filterTier(tier)"
+              class="px-4 py-1 rounded-full text-sm border transition-all duration-200 ease-in-out transform hover:scale-105"
+              [ngClass]="{
+                'bg-[#e0e133] text-[#003d2e] border-[#e0e133]':
+                  selectedTier === tier,
+                'bg-white text-[#003d2e] border-gray-300 hover:bg-gray-100':
+                  selectedTier !== tier
+              }"
+            >
+              {{ tier }}
+            </button>
+          </div>
+        </div>
+
+        <a
+          *ngIf="cartCount > 0 && isSticky"
+          routerLink="/cart"
+          class="relative inline-flex items-center gap-2 text-[#003d2e] font-medium hover:underline"
+        >
+          <span class="material-icons">shopping_cart</span>
+          <span
+            class="absolute -top-1 -right-2 bg-[#e0e133] text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold shadow-sm"
+          >
+            {{ cartCount }}
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto">
+      <!-- Template Cards -->
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div
+          *ngFor="let template of filteredTemplates"
+          (click)="goToTemplate(template.id)"
+          class="relative bg-white border cursor-pointer rounded-2xl shadow hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+        >
+          <!-- Optional "New" or "Best Seller" badge -->
+          <div
+            class="absolute top-3 right-3 bg-[#003d2e] text-white text-xs px-2 py-1 rounded-full shadow"
+          >
+            New
+          </div>
+
+          <img
+            [src]="template.cover"
+            [alt]="template.name"
+            class="w-full h-48 object-cover"
+          />
+
+          <div class="p-5">
+            <h3 class="text-xl font-semibold text-[#003d2e] mb-2">
+              {{ template.name }}
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">{{ template.category }}</p>
+
+            <!-- Prompt -->
+            <p
+              *ngIf="template.tiers.length > 1"
+              class="text-xs text-gray-500 mb-2 italic"
+            >
+              Select a tier to add to cart:
+            </p>
+
+            <!-- Clickable Tiers -->
+            <div class="flex gap-2 flex-wrap mb-4">
+              <button
+                *ngFor="let tier of template.tiers"
+                (click)="
+                  selectedTiers[template.id] = tier; $event.stopPropagation()
+                "
+                class="text-xs px-3 py-1 rounded-full font-medium border transition-all"
+                [ngClass]="[
+                  tier === 'Basic'
+                    ? selectedTiers[template.id] === tier
+                      ? 'bg-[#003d2e] text-white ring-2 ring-[#001f18]'
+                      : 'bg-[#003d2e] text-white'
+                    : tier === 'Standard'
+                    ? selectedTiers[template.id] === tier
+                      ? 'bg-[#e0e133] text-[#003d2e] ring-2 ring-[#c9c927]'
+                      : 'bg-[#e0e133] text-[#003d2e]'
+                    : tier === 'Premium'
+                    ? selectedTiers[template.id] === tier
+                      ? 'bg-[#1f2937] text-white ring-2 ring-[#111827]'
+                      : 'bg-[#1f2937] text-white'
+                    : ''
+                ]"
+              >
+                {{ tier }}
+              </button>
+            </div>
+
+            <button
+              *ngIf="!isInCart(template.id, selectedTiers[template.id])"
+              (click)="addToCart(template, selectedTiers[template.id], $event)"
+              class="w-full bg-[#003d2e] text-white px-4 py-2 rounded-md hover:bg-[#00271e] transition text-sm font-medium mb-2"
+            >
+              Add to Cart
+            </button>
+
+            <a
+              *ngIf="isInCart(template.id, selectedTiers[template.id])"
+              routerLink="/cart"
+              class="block text-center w-full bg-[#e0e133] text-[#003d2e] px-4 py-2 rounded-md hover:bg-yellow-300 transition text-sm font-medium mb-2"
+            >
+              View in Cart
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
