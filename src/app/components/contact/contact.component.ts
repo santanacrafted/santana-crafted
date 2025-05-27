@@ -16,6 +16,7 @@ import {
 })
 export class ContactComponent {
   contactForm: FormGroup;
+  formSubmitted: boolean = false;
 
   constructor(private fb: FormBuilder) {
     this.contactForm = this.fb.group({
@@ -26,6 +27,7 @@ export class ContactComponent {
   }
 
   onSubmit() {
+    this.formSubmitted = true;
     if (this.contactForm.valid) {
       const formData = this.contactForm.value;
       // Submit to Firebase, EmailJS, or API here

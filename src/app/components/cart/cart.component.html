@@ -14,7 +14,7 @@
     </p>
 
     <!-- Cart Table -->
-    <div *ngIf="cartItems.length > 0" class="overflow-x-auto">
+    <div *ngIf="cartItems.length > 0">
       <table class="min-w-full bg-white border rounded-xl shadow">
         <thead class="bg-[#def071] text-[#003d2e] text-sm uppercase">
           <tr>
@@ -64,7 +64,7 @@
 
       <!-- Summary + Checkout -->
       <div
-        class="flex flex-col md:flex-row justify-between items-center mt-10 gap-6"
+        class="flex flex-col md:flex-row justify-between items-center mt-10 gap-6 overflow-visible"
       >
         <div class="text-xl font-semibold text-[#003d2e]">
           Total: <span>${{ getTotal() }}</span>

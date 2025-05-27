@@ -1,6 +1,6 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Route, RouterModule } from '@angular/router';
 import {
   NavigationConfig,
   NavItem,
@@ -9,6 +9,7 @@ import { NavigationSettings } from '../../../config/navigation/navigation-settin
 import { dropdownAnimation } from '../../animations/dropdown.animation';
 import { TranslateModule } from '@ngx-translate/core';
 import { CartService } from '../../services/cart.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navigation',
@@ -39,7 +40,7 @@ export class NavigationComponent {
     }
   }
 
-  constructor(private cartService: CartService) {}
+  constructor(private cartService: CartService, public router: Router) {}
 
   ngOnInit() {
     this.cartService.cartItems$.subscribe((items) => {

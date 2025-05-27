@@ -8,7 +8,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // ✅ Required for ngModel
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CartItem, CartService } from '../../shared/services/cart.service';
 import {
@@ -45,155 +45,22 @@ import {
   ],
 })
 export class TemplatesComponent implements OnInit {
-  storeImg: string = '/assets/images/minimal-store.png';
-  churchImg: string = '/assets/images/church-live-stream.png';
-  templates = [
-    {
-      id: 'temp01',
-      name: 'Clean Admin Dashboard',
-      category: 'Dashboard',
-      cover: this.storeImg,
-      tiers: ['Basic', 'Standard', 'Premium'],
-    },
-    {
-      id: 'temp02',
-      name: 'Creative Portfolio',
-      category: 'Portfolio',
-      cover: this.churchImg,
-      tiers: ['Basic', 'Premium'],
-    },
-    {
-      id: 'temp03',
-      name: 'Nonprofit Starter',
-      category: 'Organization',
-      cover: this.storeImg,
-      tiers: ['Basic', 'Standard', 'Premium'],
-    },
-    {
-      id: 'temp04',
-      name: 'Modern Storefront',
-      category: 'Store',
-      cover: this.churchImg,
-      tiers: ['Standard', 'Premium'],
-    },
-    {
-      id: 'temp05',
-      name: 'Church Essentials',
-      category: 'Church',
-      cover: this.storeImg,
-      tiers: ['Basic', 'Standard'],
-    },
-    {
-      id: 'temp06',
-      name: 'Minimal Art Showcase',
-      category: 'Art',
-      cover: this.churchImg,
-      tiers: ['Premium'],
-    },
-    {
-      id: 'temp07',
-      name: 'Dark Portfolio',
-      category: 'Portfolio',
-      cover: this.storeImg,
-      tiers: ['Basic', 'Standard', 'Premium'],
-    },
-    {
-      id: 'temp08',
-      name: 'Startup SaaS UI',
-      category: 'Dashboard',
-      cover: this.churchImg,
-      tiers: ['Standard', 'Premium'],
-    },
-    {
-      id: 'temp09',
-      name: 'Event Organizer',
-      category: 'Organization',
-      cover: this.storeImg,
-      tiers: ['Basic', 'Standard'],
-    },
-    {
-      id: 'temp10',
-      name: 'Ecommerce Cart Pro',
-      category: 'Store',
-      cover: this.churchImg,
-      tiers: ['Premium'],
-    },
-    {
-      id: 'temp11',
-      name: 'Faith Community Site',
-      category: 'Church',
-      cover: this.storeImg,
-      tiers: ['Basic', 'Standard'],
-    },
-    {
-      id: 'temp12',
-      name: 'Photography Portfolio',
-      category: 'Portfolio',
-      cover: this.churchImg,
-      tiers: ['Premium'],
-    },
-    {
-      id: 'temp13',
-      name: 'Minimal Store',
-      category: 'Store',
-      cover: this.storeImg,
-      tiers: ['Basic', 'Standard'],
-    },
-    {
-      id: 'temp14',
-      name: 'Admin UI Kit',
-      category: 'Dashboard',
-      cover: this.churchImg,
-      tiers: ['Standard', 'Premium'],
-    },
-    {
-      id: 'temp15',
-      name: 'Fundraiser Website',
-      category: 'Organization',
-      cover: this.storeImg,
-      tiers: ['Basic', 'Standard'],
-    },
-    {
-      id: 'temp16',
-      name: 'Digital Artist Site',
-      category: 'Art',
-      cover: this.churchImg,
-      tiers: ['Premium'],
-    },
-    {
-      id: 'temp17',
-      name: 'Volunteer Hub',
-      category: 'Organization',
-      cover: this.storeImg,
-      tiers: ['Basic'],
-    },
-    {
-      id: 'temp18',
-      name: 'Tech Portfolio',
-      category: 'Portfolio',
-      cover: this.churchImg,
-      tiers: ['Basic', 'Standard', 'Premium'],
-    },
-    {
-      id: 'temp19',
-      name: 'Church Livestream',
-      category: 'Church',
-      cover: this.storeImg,
-      tiers: ['Premium'],
-    },
-    {
-      id: 'temp20',
-      name: 'Single Page Store',
-      category: 'Store',
-      cover: this.churchImg,
-      tiers: ['Basic'],
-    },
-  ];
+  storeImg = '/assets/images/minimal-store.png';
+  churchImg = '/assets/images/church-live-stream.png';
+
+  templates: {
+    id: string;
+    name: string;
+    category: string;
+    cover: string;
+    tiers: string[];
+  }[] = [];
+
   @ViewChild('filterBar') filterBar!: ElementRef;
   isSticky = false;
-  filteredTemplates = JSON.parse(JSON.stringify(this.templates));
 
-  categories: string[] = [
+  filteredTemplates = [...this.templates];
+  categories = [
     'All',
     'Dashboard',
     'Organization',
@@ -202,16 +69,15 @@ export class TemplatesComponent implements OnInit {
     'Church',
     'Art',
   ];
-
-  tiers: string[] = ['All', 'Basic', 'Standard', 'Premium'];
+  tiers = ['All', 'Basic', 'Standard', 'Premium'];
 
   selectedCategory = 'All';
   selectedTier = 'All';
 
-  // 🆕 Tier selection tracking
   selectedTiers: { [templateId: string]: string } = {};
   cartItems: CartItem[] = [];
   cartCount = 0;
+
   constructor(
     private cartService: CartService,
     private cd: ChangeDetectorRef,
@@ -220,27 +86,25 @@ export class TemplatesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.autoSelectSingleTier();
+    this.templates = this.cartService.templates;
+    const tierParam = this.route.snapshot.queryParamMap.get('tier');
+    if (tierParam && this.tiers.includes(tierParam)) {
+      this.selectedTier = tierParam;
+    }
+
     this.cartService.cartItems$.subscribe((items) => {
       this.cartItems = items;
       this.cartCount = items.length;
 
-      this.applyFilters();
       this.syncSelectedTiersFromCart();
-      this.applyFilters();
-    });
+      this.autoSelectSingleTier();
 
-    this.route.queryParams.subscribe((params) => {
-      const tierParam = params['tier'];
-      if (tierParam && this.tiers.includes(tierParam)) {
-        this.selectedTier = tierParam;
+      if (tierParam) {
+        this.autoSelectTierGlobally();
       }
-      this.cartService.cartItems$.subscribe((items) => {
-        this.cartItems = items;
-        this.syncSelectedTiersFromCart();
-        this.autoSelectSingleTier();
-        this.applyFilters();
-      });
+
+      this.applyFilters();
+      this.cd.detectChanges();
     });
   }
 
@@ -248,72 +112,70 @@ export class TemplatesComponent implements OnInit {
   onScroll() {
     if (!this.filterBar) return;
     const top = this.filterBar.nativeElement.getBoundingClientRect().top;
-    this.isSticky = top <= 24; // 'top-4' is 1rem = 16px + extra margin/padding
+    this.isSticky = top <= 24;
   }
 
   filterCategory(category: string) {
     this.selectedCategory = category;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {},
+      queryParamsHandling: '',
+    });
     this.applyFilters();
   }
 
   filterTier(tier: string) {
     this.selectedTier = tier;
+    const currentScroll = window.scrollY;
+
+    this.router
+      .navigate([], {
+        relativeTo: this.route,
+        queryParams: {},
+        queryParamsHandling: '',
+        replaceUrl: true,
+        skipLocationChange: false,
+      })
+      .then(() => {
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: currentScroll, behavior: 'auto' });
+        });
+      });
+
     this.applyFilters();
+
+    if (tier === 'All') {
+      this.selectedTiers = {};
+    } else {
+      this.autoSelectFromTierFilter();
+    }
   }
 
-  goToTemplate(id: string) {
-    this.router.navigate(['/template', id]);
-  }
+  autoSelectFromTierFilter() {
+    if (this.selectedTier === 'All') return;
 
-  applyFilters() {
-    this.filteredTemplates = this.templates.filter((template) => {
-      const categoryMatch =
-        this.selectedCategory === 'All' ||
-        template.category === this.selectedCategory;
-      const tierMatch =
-        this.selectedTier === 'All' ||
-        template.tiers.includes(this.selectedTier);
-      return categoryMatch && tierMatch;
+    this.filteredTemplates.forEach((template) => {
+      const cartItem = this.cartItems.find(
+        (item) => item.name === template.name
+      );
+      if (!cartItem && template.tiers.includes(this.selectedTier)) {
+        this.selectedTiers[template.id] = this.selectedTier;
+      }
     });
   }
 
-  addToCart(template: any, tier: string, event: MouseEvent) {
-    console.log(template);
-    console.log(tier);
+  autoSelectTierGlobally() {
+    if (this.selectedTier === 'All') return;
 
-    console.log(event);
-
-    event.stopPropagation();
-    if (!tier) {
-      alert('Please select a tier first.');
-      return;
-    }
-
-    const priceMap: any = {
-      Basic: 29,
-      Standard: 69,
-      Premium: 129,
-    };
-
-    const cartItem: CartItem = {
-      name: template.name,
-      tier: tier as 'Basic' | 'Standard' | 'Premium',
-      price: priceMap[tier] || 0,
-    };
-
-    this.cartService.addItem(cartItem);
-    alert(
-      `Added "${cartItem.name}" (${cartItem.tier}) to cart for $${cartItem.price}`
-    );
-    this.cd.detectChanges();
-  }
-
-  isInCart(templateId: string, tier: string): boolean {
-    return this.cartItems.some(
-      (item) =>
-        item.name === this.templates.find((t) => t.id === templateId)?.name &&
-        item.tier === tier
-    );
+    this.templates.forEach((template) => {
+      const cartItem = this.cartItems.find(
+        (item) => item.name === template.name
+      );
+      if (!cartItem && template.tiers.includes(this.selectedTier)) {
+        this.selectedTiers[template.id] = this.selectedTier;
+      }
+    });
   }
 
   autoSelectSingleTier() {
@@ -331,5 +193,67 @@ export class TemplatesComponent implements OnInit {
         this.selectedTiers[template.id] = item.tier;
       }
     }
+  }
+
+  applyFilters() {
+    this.filteredTemplates = this.templates.filter((template) => {
+      const categoryMatch =
+        this.selectedCategory === 'All' ||
+        template.category === this.selectedCategory;
+      const tierMatch =
+        this.selectedTier === 'All' ||
+        template.tiers.includes(this.selectedTier);
+      return categoryMatch && tierMatch;
+    });
+  }
+
+  addToCart(
+    template: {
+      id: string;
+      name: string;
+      category: string;
+      cover: string;
+      tiers: string[];
+    },
+    tier: string,
+    event: MouseEvent
+  ) {
+    event.stopPropagation();
+
+    if (!tier) {
+      alert('Please select a tier first.');
+      return;
+    }
+
+    const priceMap: Record<'Basic' | 'Standard' | 'Premium', number> = {
+      Basic: 29,
+      Standard: 69,
+      Premium: 129,
+    };
+
+    const typedTier = tier as 'Basic' | 'Standard' | 'Premium';
+
+    const cartItem: CartItem = {
+      name: template.name,
+      tier: typedTier,
+      price: priceMap[typedTier],
+    };
+    this.cartService.addItem(cartItem);
+    alert(
+      `Added "${cartItem.name}" (${cartItem.tier}) to cart for $${cartItem.price}`
+    );
+    this.cd.detectChanges();
+  }
+
+  isInCart(templateId: string, tier: string): boolean {
+    return this.cartItems.some(
+      (item) =>
+        item.name === this.templates.find((t) => t.id === templateId)?.name &&
+        item.tier === tier
+    );
+  }
+
+  goToTemplate(id: string) {
+    this.router.navigate(['/template', id]);
   }
 }

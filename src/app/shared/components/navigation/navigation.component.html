@@ -12,15 +12,18 @@
       {{ item.label | translate }}
     </div>
     <div *ngIf="item.type === 'link'" class="relative group">
-      <!-- Parent Link -->
       <a
+        *ngIf="
+          item.label !== 'Cart' ||
+          (router.url !== '/cart' && router.url !== '/checkout')
+        "
         [routerLink]="item.path"
         (click)="onNavigationClicked.emit()"
         class="flex items-center gap-2 text-gray-800 hover:text-[#0d9488]-500 transition-colors font-light"
         [ngStyle]="{
-             'font-size': settings.labelFontSize,
-             'padding': settings.linkPadding,
-           }"
+          'font-size': settings.labelFontSize,
+          padding: settings.linkPadding
+        }"
         [ngClass]="[
           item.labelColor,
           item.hoverLabelColor,

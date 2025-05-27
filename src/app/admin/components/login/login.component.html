@@ -1,0 +1,68 @@
+<section
+  class="min-h-screen flex items-center justify-center bg-[#fefcf8] px-6"
+>
+  <div
+    class="w-full max-w-md bg-white shadow-lg rounded-xl p-8 border border-gray-200"
+  >
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold text-[#003d2e]">Admin Login</h1>
+      <p class="text-sm text-gray-500 mt-2">Welcome back to SantanaCrafted</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="admin@example.com"
+          class="mt-1 w-full border-b border-gray-300 focus:outline-none focus:border-[#003d2e] py-2"
+        />
+        <div
+          *ngIf="
+            loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+          "
+          class="text-sm text-red-500 mt-1"
+        >
+          Please enter a valid email.
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Password</label>
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+          class="mt-1 w-full border-b border-gray-300 focus:outline-none focus:border-[#003d2e] py-2"
+        />
+        <div
+          *ngIf="
+            loginForm.get('password')?.invalid &&
+            loginForm.get('password')?.touched
+          "
+          class="text-sm text-red-500 mt-1"
+        >
+          Password is required.
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <button
+          type="submit"
+          class="w-full bg-[#003d2e] hover:bg-[#001f18] text-white font-semibold py-2 rounded-md transition"
+          [disabled]="loginForm.invalid"
+        >
+          Sign In
+        </button>
+      </div>
+    </form>
+
+    <p class="text-xs text-center text-gray-400 mt-6">
+      &copy; 2025 SantanaCrafted. Admin access only.
+    </p>
+  </div>
+</section>

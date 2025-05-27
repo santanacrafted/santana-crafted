@@ -1,0 +1,219 @@
+<section class="bg-white py-20 px-6 md:px-12">
+  <div class="max-w-5xl mx-auto relative">
+    <!-- Go Back to Cart Button -->
+    <a
+      routerLink="/cart"
+      class="absolute left-0 top-0 -mt-6 cursor-pointer text-[#003d2e] border border-[#003d2e] px-4 py-2 rounded-md hover:bg-[#003d2e] hover:text-white transition text-sm font-medium"
+    >
+      ← Go Back to Cart
+    </a>
+
+    <h2 class="text-4xl font-bold text-[#003d2e] mb-12 text-center">
+      Checkout
+    </h2>
+
+    <!-- Order Summary -->
+    <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-12 shadow">
+      <h3 class="text-xl font-semibold mb-4">Order Summary</h3>
+      <div
+        *ngFor="let item of cartItems"
+        class="flex justify-between py-3 border-b text-sm"
+      >
+        <div>
+          <p class="font-medium">{{ item.name }}</p>
+          <p class="text-gray-500">Tier: {{ item.tier }}</p>
+        </div>
+        <p class="font-semibold text-[#003d2e]">${{ item.price }}</p>
+      </div>
+      <div class="flex justify-between mt-4 text-lg font-bold text-[#003d2e]">
+        <span>Total:</span>
+        <span>${{ getTotal() }}</span>
+      </div>
+    </div>
+
+    <!-- Alternative Payment Options -->
+    <div class="text-center mb-8">
+      <p class="text-sm text-gray-500 mb-4">Or pay with</p>
+      <div class="flex justify-center gap-4">
+        <button
+          class="flex items-center gap-2 px-5 py-2 border border-gray-300 rounded-lg hover:shadow"
+        >
+          <img src="/assets/icons/paypal.svg" alt="PayPal" class="w-6 h-6" />
+          <span class="text-sm font-medium">PayPal</span>
+        </button>
+        <button
+          class="flex items-center gap-2 px-5 py-2 border border-gray-300 rounded-lg hover:shadow"
+        >
+          <img
+            src="/assets/icons/applepay.svg"
+            alt="Apple Pay"
+            class="w-6 h-6"
+          />
+          <span class="text-sm font-medium">Apple Pay</span>
+        </button>
+        <button
+          class="flex items-center gap-2 px-5 py-2 border border-gray-300 rounded-lg hover:shadow"
+        >
+          <img
+            src="/assets/icons/googlepay.svg"
+            alt="Google Pay"
+            class="w-6 h-6"
+          />
+          <span class="text-sm font-medium">Google Pay</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Checkout Form -->
+    <form
+      (ngSubmit)="onCheckout()"
+      [formGroup]="checkoutForm"
+      class="bg-white border border-gray-200 rounded-xl shadow p-8 space-y-6"
+    >
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Full Name -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Full Name</label
+          >
+          <input
+            formControlName="fullName"
+            type="text"
+            class="mt-1 w-full border-b border-gray-300 focus:outline-none focus:border-[#003d2e]"
+            placeholder="John Doe"
+          />
+          <div
+            *ngIf="
+              checkoutForm.get('fullName')?.invalid &&
+              checkoutForm.get('fullName')?.touched
+            "
+            class="text-sm text-red-500 mt-1"
+          >
+            Name is required.
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Email Address</label
+          >
+          <input
+            formControlName="email"
+            type="email"
+            class="mt-1 w-full border-b border-gray-300 focus:outline-none focus:border-[#003d2e]"
+            placeholder="john@example.com"
+          />
+          <div
+            *ngIf="
+              checkoutForm.get('email')?.invalid &&
+              checkoutForm.get('email')?.touched
+            "
+            class="text-sm text-red-500 mt-1"
+          >
+            Enter a valid email address.
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Details -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Card Number</label
+          >
+          <div class="relative">
+            <input
+              formControlName="cardNumber"
+              type="text"
+              maxlength="16"
+              inputmode="numeric"
+              class="mt-1 w-full pl-10 border-b border-gray-300 focus:outline-none focus:border-[#003d2e]"
+              placeholder="1234 5678 9012 3456"
+            />
+            <span
+              class="absolute left-0 top-1/2 transform -translate-y-1/2 text-gray-400 pl-2"
+            >
+              <i class="fas fa-credit-card"></i>
+            </span>
+          </div>
+          <div
+            *ngIf="
+              checkoutForm.get('cardNumber')?.invalid &&
+              checkoutForm.get('cardNumber')?.touched
+            "
+            class="text-sm text-red-500 mt-1"
+          >
+            Enter a valid 16-digit card number.
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Expiry Date</label
+          >
+          <input
+            formControlName="expiryDate"
+            type="text"
+            placeholder="MM/YY"
+            class="mt-1 w-full border-b border-gray-300 focus:outline-none focus:border-[#003d2e]"
+          />
+          <div
+            *ngIf="
+              checkoutForm.get('expiryDate')?.invalid &&
+              checkoutForm.get('expiryDate')?.touched
+            "
+            class="text-sm text-red-500 mt-1"
+          >
+            Enter a valid expiry date (MM/YY).
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">CVV</label>
+          <input
+            formControlName="cvv"
+            type="text"
+            maxlength="4"
+            inputmode="numeric"
+            class="mt-1 w-full border-b border-gray-300 focus:outline-none focus:border-[#003d2e]"
+            placeholder="123"
+          />
+          <div
+            *ngIf="
+              checkoutForm.get('cvv')?.invalid &&
+              checkoutForm.get('cvv')?.touched
+            "
+            class="text-sm text-red-500 mt-1"
+          >
+            Enter a valid CVV.
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700"
+          >Order Notes (optional)</label
+        >
+        <textarea
+          formControlName="notes"
+          rows="4"
+          class="mt-1 w-full border-b border-gray-300 focus:outline-none focus:border-[#003d2e]"
+          placeholder="Any specific instructions or notes for your order..."
+        ></textarea>
+      </div>
+
+      <!-- Submit -->
+      <div class="text-center pt-6">
+        <button
+          type="submit"
+          class="bg-[#003d2e] text-white px-8 py-3 rounded-md font-medium hover:bg-[#001f18] transition"
+          [disabled]="checkoutForm.invalid || cartItems.length === 0"
+        >
+          Confirm Order
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

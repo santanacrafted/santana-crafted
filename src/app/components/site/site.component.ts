@@ -1,24 +1,24 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './shared/components/header/header.component';
+
+import { TranslateService } from '@ngx-translate/core';
+import { ViewportScroller } from '@angular/common';
+import { filter } from 'rxjs';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 import {
   FooterComponent,
   FooterSection,
-} from './shared/components/footer/footer.component';
-import { TranslateService } from '@ngx-translate/core';
-import { CommonModule, ViewportScroller } from '@angular/common';
-import { filter } from 'rxjs';
+} from '../../shared/components/footer/footer.component';
 
 @Component({
-  selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, CommonModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  selector: 'app-site',
+  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  templateUrl: './site.component.html',
+  styleUrl: './site.component.scss',
 })
-export class AppComponent {
+export class SiteComponent {
   title = 'SantanaCrafted';
   logoUrl = '/assets/icons/SantanaCrafted-logo.png';
-  showFooterAndHeader = true;
   footerSections: FooterSection[] = [
     {
       title: 'FOOTER_QUICK_LINK_HEADER',
@@ -62,9 +62,8 @@ export class AppComponent {
     this.translate.use(defaultLang);
     this.router.events
       .pipe(filter((event: any) => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
+      .subscribe(() => {
         this.viewportScroller.scrollToPosition([0, 0]);
-        this.showFooterAndHeader = !event.urlAfterRedirects.includes('/admin');
       });
   }
 

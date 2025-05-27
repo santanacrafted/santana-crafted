@@ -1,1 +1,113 @@
-<p>template-detail works!</p>
+<section class="bg-white text-[#003d2e] py-16 px-6 md:px-12">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-2">{{ template?.name }}</h1>
+      <p class="text-lg text-gray-600">{{ template?.category }} Template</p>
+    </div>
+
+    <!-- Cover Image -->
+    <div class="rounded-xl overflow-hidden shadow-lg mb-10">
+      <img
+        [src]="template?.cover"
+        [alt]="template?.name"
+        class="w-full h-auto object-cover"
+      />
+    </div>
+
+    <!-- Who is it for -->
+    <div class="mb-12">
+      <h2 class="text-2xl font-semibold mb-4">Who is this template for?</h2>
+      <p class="text-gray-700 leading-relaxed">
+        This template is ideal for churches, nonprofits, businesses, and
+        creatives looking to launch a professional, mobile-friendly website with
+        minimal setup. Whether you're sharing events, offering donations, or
+        showcasing services — this template has you covered.
+      </p>
+    </div>
+
+    <!-- Features with Tier Tabs -->
+    <div class="mb-12" *ngIf="template?.tiers?.length">
+      <h2 class="text-2xl font-semibold mb-6">Template Features</h2>
+
+      <!-- Tabs -->
+      <div class="flex gap-4 mb-6">
+        <button
+          *ngFor="let tier of template.tiers"
+          (click)="selectedTier = tier"
+          [ngClass]="{
+            'bg-[#003d2e] text-white': selectedTier === tier,
+            'bg-gray-100 text-[#003d2e]': selectedTier !== tier
+          }"
+          class="px-4 py-2 rounded-full font-medium text-sm border border-[#003d2e] transition-all"
+        >
+          {{ tier }}
+        </button>
+      </div>
+
+      <!-- Tier-specific Features -->
+      <div *ngIf="selectedTier === 'Basic'">
+        <ul class="list-disc list-inside text-gray-700 space-y-2">
+          <li>Mobile-optimized homepage</li>
+          <li>Basic contact or inquiry form</li>
+          <li>Donation or PayPal integration</li>
+          <li>Minimal layout and clean design</li>
+        </ul>
+      </div>
+
+      <div *ngIf="selectedTier === 'Standard'">
+        <ul class="list-disc list-inside text-gray-700 space-y-2">
+          <li>Everything in Basic</li>
+          <li>Multilingual support (EN/ES)</li>
+          <li>Team, blog, and services pages</li>
+          <li>Firebase integrated contact form</li>
+        </ul>
+      </div>
+
+      <div *ngIf="selectedTier === 'Premium'">
+        <ul class="list-disc list-inside text-gray-700 space-y-2">
+          <li>Everything in Standard</li>
+          <li>Admin dashboard + CMS integration</li>
+          <li>Gallery and media manager</li>
+          <li>Dark mode toggle and advanced UI controls</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Demo Link -->
+    <div class="mb-12 text-center">
+      <h2 class="text-2xl font-semibold mb-4">See the Template Live</h2>
+      <p class="text-gray-600 mb-4">
+        Preview this template in action and experience the design before
+        purchasing.
+      </p>
+      <a
+        [href]="template?.demoUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-block bg-[#003d2e] text-white px-6 py-3 rounded-md text-sm font-medium hover:bg-[#001f18] transition"
+      >
+        🔗 View Live Demo
+      </a>
+    </div>
+
+    <!-- Support Video -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-semibold mb-4">How to Set It Up</h2>
+      <p class="text-gray-600 mb-4">
+        Watch this quick video to learn how to install and customize this
+        template.
+      </p>
+      <div class="aspect-w-16 aspect-h-20">
+        <iframe
+          class="w-full rounded-xl shadow-md"
+          src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+          title="Setup Instructions"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>

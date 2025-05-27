@@ -1,6 +1,5 @@
 <div class="flex flex-col min-h-screen">
   <app-header
-    [hidden]="!showFooterAndHeader"
     [layout]="'horizontal'"
     [headerBackgroundColor]="'#fff'"
     [drawerBtnPosition]="'left'"
@@ -15,13 +14,12 @@
     [topInfoBar]="'Sale on all templates 50% OFF'"
     [topInfoBarColor]="'#def071'"
   ></app-header>
-
-  <main [ngClass]="showFooterAndHeader ? 'pt-32' : ''" class="flex-grow">
+  {{ "here" }}
+  <main class="flex-grow pt-32">
     <router-outlet></router-outlet>
   </main>
 
   <app-footer
-    [hidden]="!showFooterAndHeader"
     [copyrightColor]="'#00140f'"
     [backgroundColor]="'#f3f3f3'"
     [textColor]="'#00140f'"
