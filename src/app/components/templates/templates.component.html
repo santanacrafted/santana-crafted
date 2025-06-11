@@ -77,7 +77,7 @@
       <!-- Template Cards -->
       <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
         <div
-          *ngFor="let template of filteredTemplates"
+          *ngFor="let template of filteredTemplates; let i = index"
           (click)="goToTemplate(template.id)"
           class="relative bg-white border cursor-pointer rounded-2xl shadow hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
         >
@@ -89,7 +89,7 @@
           </div>
 
           <img
-            [src]="template.cover"
+            [src]="template.coverImage"
             [alt]="template.name"
             class="w-full h-48 object-cover"
           />
@@ -109,30 +109,32 @@
             </p>
 
             <!-- Clickable Tiers -->
+            <!-- Clickable Tiers -->
             <div class="flex gap-2 flex-wrap mb-4">
               <button
                 *ngFor="let tier of template.tiers"
                 (click)="
-                  selectedTiers[template.id] = tier; $event.stopPropagation()
+                  selectedTiers[template.id] = tier.tierName;
+                  $event.stopPropagation()
                 "
                 class="text-xs px-3 py-1 rounded-full font-medium border transition-all"
                 [ngClass]="[
-                  tier === 'Basic'
-                    ? selectedTiers[template.id] === tier
+                  tier.tierName === 'Basic'
+                    ? selectedTiers[template.id] === tier.tierName
                       ? 'bg-[#003d2e] text-white ring-2 ring-[#001f18]'
                       : 'bg-[#003d2e] text-white'
-                    : tier === 'Standard'
-                    ? selectedTiers[template.id] === tier
+                    : tier.tierName === 'Standard'
+                    ? selectedTiers[template.id] === tier.tierName
                       ? 'bg-[#e0e133] text-[#003d2e] ring-2 ring-[#c9c927]'
                       : 'bg-[#e0e133] text-[#003d2e]'
-                    : tier === 'Premium'
-                    ? selectedTiers[template.id] === tier
+                    : tier.tierName === 'Premium'
+                    ? selectedTiers[template.id] === tier.tierName
                       ? 'bg-[#1f2937] text-white ring-2 ring-[#111827]'
                       : 'bg-[#1f2937] text-white'
                     : ''
                 ]"
               >
-                {{ tier }}
+                {{ tier.tierName }}
               </button>
             </div>
 

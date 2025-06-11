@@ -1,0 +1,13 @@
+/* For Webkit browsers (Chrome, Safari) */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .aspect-16-9 {
+    aspect-ratio: 16 / 9;
+  }

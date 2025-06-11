@@ -6,6 +6,7 @@ import { ContactComponent } from './components/contact/contact.component';
 import { PricingComponent } from './components/pricing/pricing.component';
 import { FeaturesComponent } from './components/features/features.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
+import { AdminComponent } from './admin/admin.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -24,6 +25,7 @@ export const routes: Routes = [
   { path: 'checkout', component: CheckoutComponent },
   {
     path: 'admin',
+    component: AdminComponent,
     loadChildren: () =>
       import('./admin/admin.routes').then((m) => m.adminRoutes),
   },

@@ -1,14 +1,25 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>SantanaCrafted</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
-<body>
-  <app-root></app-root>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>SantanaCrafted</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- 👇 Runtime config loader -->
+    <script>
+      window["__env"] = {};
+      fetch("/assets/runtime-environment.json")
+        .then((res) => res.json())
+        .then((env) => (window["__env"] = env))
+        .catch(() => console.error("Could not load runtime environment"));
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
 </html>

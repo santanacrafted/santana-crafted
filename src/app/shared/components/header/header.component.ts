@@ -100,7 +100,7 @@ import { TranslateService } from '@ngx-translate/core';
         <!-- 📢 CTA Button -->
         <div *ngIf="showCTAButton" class="ml-4 hidden md:block">
           <button
-            [ngStyle]="ctaButtonStyles"
+            [ngClass]="ctaButtonStyles"
             class="px-4 py-2 rounded font-semibold"
           >
             {{ ctaButtonLabel }}
@@ -154,10 +154,7 @@ export class HeaderComponent {
 
   @Input() showCTAButton: boolean = false;
   @Input() ctaButtonLabel: string = 'Get Started';
-  @Input() ctaButtonStyles: { [key: string]: string } = {
-    backgroundColor: '#3B82F6',
-    color: '#ffffff',
-  };
+  @Input() ctaButtonStyles: string = 'bg-[#3B82F6] text-[#fff]';
 
   @Input() drawerSide: 'left' | 'right' = 'left';
   @Input() drawerBtnPosition: 'left' | 'right' = 'left';

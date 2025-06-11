@@ -30,6 +30,11 @@
                 "glob": "**/*",
                 "input": "public",
                 "output": "/"
+              },
+              {
+                "glob": "runtime-environment.json",
+                "input": "src/",
+                "output": "/assets/"
               }
             ],
             "styles": ["src/styles.scss"],
@@ -40,8 +45,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -84,6 +89,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "runtime-environment.json",
+                "input": "src/",
+                "output": "/assets/"
               }
             ],
             "styles": ["src/styles.scss"],

@@ -1,0 +1,198 @@
+<section class="flex h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <aside
+    *ngIf="user$ | async"
+    [ngClass]="isSidebarCollapsed ? 'w-20 items-center' : 'w-full md:w-64'"
+    class="h-screen fixed left-0 top-0 bottom-0 bg-[#005480] text-white flex flex-col justify-between p-4 transition-all duration-300 ease-in-out z-50"
+  >
+    <!-- Top: Brand & Toggle -->
+    <div>
+      <div
+        class="flex items-center justify-between mb-10 w-full"
+        [ngClass]="{ '!justify-center': isSidebarCollapsed }"
+      >
+        <ng-container *ngIf="!isSidebarCollapsed">
+          <h2 class="text-xl font-bold whitespace-nowrap TitiliumWeb">
+            United Mission
+          </h2>
+          <button (click)="toggleSidebar()" class="text-white">
+            <span class="material-icons">menu</span>
+          </button>
+        </ng-container>
+        <ng-container *ngIf="isSidebarCollapsed">
+          <button (click)="toggleSidebar()" class="text-white">
+            <span class="material-icons">menu</span>
+          </button>
+        </ng-container>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex flex-col gap-3 text-sm w-full">
+        <a
+          routerLink="/admin/dashboard"
+          routerLinkActive="bg-white text-[#005480] font-semibold"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item"
+        >
+          <span class="material-icons">dashboard</span>
+          <span *ngIf="!isSidebarCollapsed">Dashboard</span>
+        </a>
+        <a
+          routerLink="/admin/gallery-management"
+          routerLinkActive="bg-white text-[#005480] font-semibold"
+          class="nav-item"
+        >
+          <span class="material-icons">collections</span>
+          <span *ngIf="!isSidebarCollapsed">Gallery</span>
+        </a>
+        <a
+          routerLink="/admin/users"
+          routerLinkActive="bg-white text-[#005480] font-semibold"
+          class="nav-item"
+        >
+          <span class="material-icons">group</span>
+          <span *ngIf="!isSidebarCollapsed">User Management</span>
+        </a>
+        <a
+          routerLink="/admin/analytics"
+          routerLinkActive="bg-white text-[#005480] font-semibold"
+          class="nav-item"
+        >
+          <span class="material-icons">insights</span>
+          <span *ngIf="!isSidebarCollapsed">Analytics</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom: Logout -->
+    <div>
+      <div class="relative" *ngIf="userInfo">
+        <button
+          (click)="showUserMenu = !showUserMenu"
+          class="w-full text-white border-t border-white/20 pt-3 flex items-center justify-left gap-2 focus:outline-none"
+        >
+          <span class="material-icons text-3xl">account_circle</span>
+          <ng-container *ngIf="!isSidebarCollapsed">
+            <span class="font-semibold">{{
+              userInfo.displayName || "Unnamed User"
+            }}</span>
+          </ng-container>
+        </button>
+
+        <div
+          (clickOutside)="showUserMenu = false"
+          *ngIf="showUserMenu"
+          class="absolute bottom-12 w-64 bg-white shadow-lg rounded-lg text-[#005480] z-50"
+          [ngClass]="{
+            'left-1/2 -translate-x-1/2': isSidebarCollapsed,
+            'left-0': !isSidebarCollapsed
+          }"
+        >
+          <div class="p-4 border-b">
+            <p class="font-semibold">
+              {{ userInfo.displayName || "Unnamed User" }}
+            </p>
+            <p class="text-sm truncate">{{ userInfo.email }}</p>
+          </div>
+          <div class="p-2 border-b">
+            <a
+              routerLink="/admin/profile"
+              class="block px-4 py-2 text-sm hover:bg-gray-100 rounded"
+            >
+              View Profile
+            </a>
+          </div>
+          <div class="p-2 border-b">
+            <a
+              routerLink="/"
+              class="block px-4 py-2 text-sm hover:bg-gray-100 rounded"
+            >
+              Back to Website
+            </a>
+          </div>
+          <div class="p-2">
+            <button
+              (click)="onLogout(); showUserMenu = false"
+              class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 rounded"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main
+    class="transition-all duration-300 ease-in-out flex-1 overflow-y-auto"
+    [ngClass]="[
+      (user$ | async) && isSidebarCollapsed
+        ? 'ml-20'
+        : (user$ | async)
+        ? 'ml-64'
+        : ''
+    ]"
+  >
+    <div
+      *ngIf="user$ | async"
+      class="w-full bg-white shadow-sm px-6 py-4 flex justify-between items-center"
+    >
+      <!-- Dashboard Title or Logo -->
+      <div class="text-xl font-semibold text-gray-800">⚙️ Admin Panel</div>
+
+      <!-- Notification Bell -->
+      <div *ngIf="user$ | async" class="relative">
+        <button
+          (clickOutside)="showNotifications = false"
+          (click)="showNotifications = !showNotifications"
+          class="relative text-gray-600 hover:text-gray-800 focus:outline-none"
+          aria-label="Notifications"
+        >
+          <span class="material-icons text-3xl">notifications</span>
+          <span
+            *ngIf="notifications && unseenCount() > 0"
+            class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-1"
+          >
+            {{ unseenCount() }}
+          </span>
+        </button>
+
+        <!-- Notifications Dropdown -->
+        <div
+          *ngIf="showNotifications"
+          class="absolute right-0 mt-2 w-80 bg-white shadow-xl rounded-lg border z-50"
+        >
+          <div class="text-sm text-gray-700 max-h-80 overflow-y-auto">
+            <ng-container
+              *ngIf="notifications.length > 0; else noNotifications"
+            >
+              <div
+                *ngFor="let notification of notifications"
+                class="p-4 border-b last:border-none cursor-pointer transition hover:bg-gray-50"
+                [ngClass]="{
+                  'text-gray-400': notification.seenBy?.includes(userInfo?.uid),
+                  'font-medium': !notification.seenBy?.includes(userInfo?.uid)
+                }"
+                (click)="handleNotificationClick(notification)"
+              >
+                <div>{{ notification.message }}</div>
+                <div class="text-xs text-gray-400 mt-1">
+                  {{ notification.type }} ·
+                  {{ notification.createdAt?.toDate() | date : "short" }}
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #noNotifications>
+              <div class="p-4 text-sm text-gray-500">No new notifications</div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</section>

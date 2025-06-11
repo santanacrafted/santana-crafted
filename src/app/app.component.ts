@@ -43,7 +43,7 @@ export class AppComponent {
     },
     {
       title: 'Admin',
-      links: [{ label: 'Login', path: '/admin' }],
+      links: [{ label: 'Login', path: '/admin/login' }],
     },
   ];
 

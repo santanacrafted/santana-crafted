@@ -6,36 +6,41 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../shared/services/auth.service';
+import { User } from '@angular/fire/auth';
+import { doc, Firestore, getDoc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   loginForm: FormGroup;
+  errorMessage = '';
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthService,
+    private firestore: Firestore
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
   }
 
-  onSubmit() {
-    if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
+  async onSubmit() {
+    const { email, password } = this.loginForm.value;
 
-      // Replace with actual auth logic
-      if (email === 'admin@example.com' && password === 'admin123') {
+    this.authService
+      .login(email, password)
+      .then((res: any) => {
         this.router.navigate(['/admin/dashboard']);
-      } else {
-        alert('Invalid credentials');
-      }
-    } else {
-      this.loginForm.markAllAsTouched();
-    }
+      })
+      .catch((err) => console.error(err));
   }
 }

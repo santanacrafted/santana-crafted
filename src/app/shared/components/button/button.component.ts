@@ -60,7 +60,7 @@ export class ButtonComponent {
   @Input() shadow: boolean = true;
   @Input() outline: boolean = false;
   @Input() defaultClasses?: string;
-
+  @Input() isLoading: boolean | any = false;
   @Output() buttonClick = new EventEmitter<any>(); // ✅ Add this
 
   get buttonClasses() {

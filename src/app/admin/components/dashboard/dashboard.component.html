@@ -1,154 +1,26 @@
-<section
-  class="min-h-screen bg-[#fefcf8] flex transition-all duration-500 ease-in-out sm:flex-col md:flex-row"
->
-  <!-- Sidebar -->
-  <aside
-    [ngClass]="isSidebarCollapsed ? 'w-20 items-center' : 'w-full md:w-64'"
-    class="transition-all duration-300 ease-in-out bg-[#003d2e] text-white flex flex-col p-4 overflow-hidden z-50"
-  >
-    <div
-      class="flex items-center justify-between mb-8 w-full"
-      [ngClass]="{ '!justify-center': isSidebarCollapsed }"
-    >
-      <ng-container *ngIf="!isSidebarCollapsed">
-        <h2
-          class="text-xl font-bold whitespace-nowrap transition-all duration-300 ease-in-out opacity-100"
-        >
-          SantanaCrafted
-        </h2>
-        <button (click)="toggleSidebar()" class="text-white focus:outline-none">
-          <span class="material-icons">menu</span>
-        </button>
-      </ng-container>
-      <ng-container *ngIf="isSidebarCollapsed">
-        <button (click)="toggleSidebar()" class="text-white focus:outline-none">
-          <span class="material-icons">menu</span>
-        </button>
-      </ng-container>
-    </div>
-    <nav class="flex flex-col gap-2 text-sm w-full">
-      <a
-        routerLink="/admin/dashboard"
-        class="hover:bg-[#00271e] px-3 py-2 rounded transition-all duration-300 ease-in-out w-full text-left flex items-center gap-2"
-      >
+<div class="min-h-screen p-4 sm:p-6">
+  <div class="flex items-start justify-between mb-6">
+    <div>
+      <h1 class="text-3xl md:text-4xl font-bold text-green-900 mb-1">
         <span class="material-icons">dashboard</span>
-        <span
-          class="transition-all duration-300 ease-in-out"
-          [ngClass]="{
-            'opacity-0 w-0 overflow-hidden': isSidebarCollapsed,
-            'opacity-100 w-auto': !isSidebarCollapsed
-          }"
-          >Dashboard</span
-        >
-      </a>
-      <a
-        routerLink="/admin/templates"
-        class="hover:bg-[#00271e] px-3 py-2 rounded transition-all duration-300 ease-in-out w-full text-left flex items-center gap-2"
-      >
-        <span class="material-icons">view_quilt</span>
-        <span
-          class="transition-all duration-300 ease-in-out"
-          [ngClass]="{
-            'opacity-0 w-0 overflow-hidden': isSidebarCollapsed,
-            'opacity-100 w-auto': !isSidebarCollapsed
-          }"
-          >Manage Templates</span
-        >
-      </a>
-      <a
-        routerLink="/admin/orders"
-        class="hover:bg-[#00271e] px-3 py-2 rounded transition-all duration-300 ease-in-out w-full text-left flex items-center gap-2"
-      >
-        <span class="material-icons">receipt</span>
-        <span
-          class="transition-all duration-300 ease-in-out"
-          [ngClass]="{
-            'opacity-0 w-0 overflow-hidden': isSidebarCollapsed,
-            'opacity-100 w-auto': !isSidebarCollapsed
-          }"
-          >Orders</span
-        >
-      </a>
-      <a
-        routerLink="/admin/users"
-        class="hover:bg-[#00271e] px-3 py-2 rounded transition-all duration-300 ease-in-out w-full text-left flex items-center gap-2"
-      >
-        <span class="material-icons">group</span>
-        <span
-          class="transition-all duration-300 ease-in-out"
-          [ngClass]="{
-            'opacity-0 w-0 overflow-hidden': isSidebarCollapsed,
-            'opacity-100 w-auto': !isSidebarCollapsed
-          }"
-          >Users</span
-        >
-      </a>
-      <a
-        routerLink="/admin/settings"
-        class="hover:bg-[#00271e] px-3 py-2 rounded transition-all duration-300 ease-in-out w-full text-left flex items-center gap-2"
-      >
-        <span class="material-icons">settings</span>
-        <span
-          class="transition-all duration-300 ease-in-out"
-          [ngClass]="{
-            'opacity-0 w-0 overflow-hidden': isSidebarCollapsed,
-            'opacity-100 w-auto': !isSidebarCollapsed
-          }"
-          >Settings</span
-        >
-      </a>
-    </nav>
-    <div class="mt-auto pt-10 w-full">
-      <button
-        class="w-full bg-[#e0e133] text-[#003d2e] font-semibold py-2 rounded hover:bg-yellow-300 transition-all duration-300 ease-in-out flex items-center justify-center gap-2"
-      >
-        <span class="material-icons">logout</span>
-        <span
-          class="transition-all duration-300 ease-in-out"
-          [ngClass]="{
-            'opacity-0 w-0 overflow-hidden': isSidebarCollapsed,
-            'opacity-100 w-auto': !isSidebarCollapsed
-          }"
-          >Logout</span
-        >
-      </button>
-    </div>
-  </aside>
-
-  <!-- Main Content -->
-  <main
-    class="transition-all duration-500 ease-in-out flex-1 p-4 sm:p-6 md:p-10"
-  >
-    <header
-      class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2"
-    >
-      <h1 class="text-2xl sm:text-3xl font-bold text-[#003d2e]">
-        Dashboard Overview
+        Admin Panel
       </h1>
-      <span class="text-sm text-gray-500">{{ today | date : "fullDate" }}</span>
-    </header>
-
-    <!-- Dashboard Stats -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      <div class="bg-white p-6 rounded-xl shadow border border-gray-200">
-        <h3 class="text-sm text-gray-500">Templates Sold</h3>
-        <p class="text-2xl font-bold text-[#003d2e]">128</p>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow border border-gray-200">
-        <h3 class="text-sm text-gray-500">Monthly Revenue</h3>
-        <p class="text-2xl font-bold text-[#003d2e]">$2,430</p>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow border border-gray-200">
-        <h3 class="text-sm text-gray-500">Active Users</h3>
-        <p class="text-2xl font-bold text-[#003d2e]">52</p>
-      </div>
+      <p class="text-sm text-gray-500">
+        Welcome back. Review your site activity and manage content.
+      </p>
     </div>
-
-    <!-- Placeholder for charts or other widgets -->
-    <div
-      class="mt-10 bg-white border border-gray-200 rounded-xl p-6 shadow text-gray-500 text-center"
-    >
-      <p class="text-sm">Charts and additional widgets coming soon...</p>
+    <div class="text-sm text-gray-500 mt-1">
+      {{ today | date : "fullDate" }}
     </div>
-  </main>
-</section>
+  </div>
+
+  <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3 mb-8">
+    <app-countries-reached-widget
+      [geoRows]="geoRows$ | async"
+    ></app-countries-reached-widget>
+  </div>
+
+  <div class="bg-white p-6 rounded-xl shadow text-center text-gray-500">
+    Charts and additional widgets coming soon...
+  </div>
+</div>

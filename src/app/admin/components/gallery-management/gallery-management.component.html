@@ -1,0 +1,425 @@
+<section class="p-4 sm:p-6">
+  <!-- Page Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-[#003d2e]">
+      <span class="material-icons">collections</span>
+      Template Admin
+    </h1>
+    <p class="text-gray-600">
+      Create, manage, and showcase templates for your shop.
+    </p>
+  </div>
+
+  <!-- Add Album Button -->
+  <div *ngIf="pageState === 'templates'" class="mb-6 text-right">
+    <button
+      (click)="openAddAlbumPopup()"
+      class="bg-[#005480] hover:bg-[#007a6f] text-white px-6 py-2 rounded-lg font-medium transition"
+    >
+      <i class="material-icons align-middle mr-1">add_photo_alternate</i>
+      Add New Template
+    </button>
+  </div>
+
+  <!-- Albums List -->
+  <div *ngIf="pageState === 'templates'">
+    <h2 class="text-2xl font-semibold text-[#003d2e] mb-4">Your Templates</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        *ngFor="let event of templates$ | async"
+        class="relative rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm"
+      >
+        <button
+          (click)="onEditTemplate(event)"
+          class="absolute top-2 right-2 bg-white hover:bg-gray-100 text-[#005480] p-1 rounded-full shadow"
+          title="Edit Album"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"
+            />
+          </svg>
+        </button>
+
+        <img [src]="event.coverImage" class="w-full h-48 object-cover" />
+
+        <div class="p-4">
+          <h3 class="text-lg font-bold text-[#003d2e]">{{ event.name }}</h3>
+          <p class="text-sm text-gray-500 mb-3">20 images • Jan 2025</p>
+          <div class="flex justify-between items-center text-sm">
+            <button
+              (click)="onDeleteAlbum(event.id)"
+              class="text-red-500 hover:underline"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #editAlbumTemplate let-close="close" let-album="album">
+  <div
+    class="bg-white/60 backdrop-blur-lg shadow-xl w-[600px] rounded-2xl p-8 mb-12 border border-gray-200"
+  >
+    <!-- Close Button -->
+    <button
+      (click)="close()"
+      aria-label="Close"
+      class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold"
+    >
+      &times;
+    </button>
+
+    <h2 class="text-xl font-semibold mb-4 text-[#003d2e]">Edit Album</h2>
+
+    <form [formGroup]="editAlbumForm" (ngSubmit)="onUpdateAlbum(album.id)">
+      <!-- Cover Image -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Cover Image
+        </label>
+        <div
+          class="relative w-full h-48 border border-gray-300 rounded-md overflow-hidden"
+        >
+          <img
+            [src]="previewUrl || album.coverImage"
+            alt="Cover"
+            class="w-full h-full object-cover"
+          />
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onCoverImageSelected($event)"
+            class="absolute inset-0 opacity-0 cursor-pointer"
+          />
+        </div>
+      </div>
+
+      <!-- Language Toggle -->
+      <div class="flex gap-2 mb-4">
+        <button
+          *ngFor="let lang of supportedLanguages"
+          type="button"
+          (click)="setActiveLang(lang)"
+          [ngClass]="{
+            'bg-blue-600 text-white': activeLang === lang,
+            'bg-gray-200 text-gray-700': activeLang !== lang
+          }"
+          class="px-3 py-1 rounded-md text-sm"
+        >
+          {{ lang.toUpperCase() }}
+        </button>
+      </div>
+
+      <div class="mb-4" formGroupName="name">
+        <label class="block text-sm font-medium text-gray-700">
+          Name ({{ activeLang.toUpperCase() }})
+        </label>
+
+        <ng-container *ngIf="getLangControl('name', activeLang) as control">
+          <input
+            type="text"
+            [formControl]="control"
+            class="w-full mt-1 p-2 border rounded-md"
+          />
+        </ng-container>
+      </div>
+
+      <div class="mb-6" formGroupName="description">
+        <label class="block text-sm font-medium text-gray-700">
+          Description ({{ activeLang.toUpperCase() }})
+        </label>
+
+        <ng-container
+          *ngIf="getLangControl('description', activeLang) as control"
+        >
+          <textarea
+            [formControl]="control"
+            rows="2"
+            class="w-full mt-1 p-2 border rounded-md"
+          ></textarea>
+        </ng-container>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="w-full bg-[#005480] hover:bg-[#003d2e] text-white font-medium py-2 rounded-md"
+      >
+        Save Changes
+      </button>
+    </form>
+  </div>
+</ng-template>
+<div *ngIf="pageState === 'add'" class="max-w-5xl mx-auto px-4 py-8">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Add New Template</h1>
+    <button
+      type="button"
+      (click)="pageState = 'templates'"
+      class="inline-flex items-center gap-1 text-[#005480] hover:text-[#007a6f] text-sm font-medium"
+    >
+      <span class="material-icons text-base">arrow_back</span>
+      Back to Templates
+    </button>
+  </div>
+
+  <!-- Form -->
+  <form
+    [formGroup]="templateForm"
+    (ngSubmit)="onCreateAlbum()"
+    class="space-y-10"
+  >
+    <!-- Template Info -->
+    <div class="grid md:grid-cols-3 gap-x-6 gap-y-6 items-start">
+      <!-- Template Name -->
+      <div class="flex flex-col col-span-2">
+        <div class="flex flex-col col-span-1 mb-4">
+          <label class="block text-sm font-medium mb-1 text-gray-700"
+            >Template Name</label
+          >
+          <input
+            formControlName="name"
+            type="text"
+            placeholder="e.g. Business Dashboard"
+            class="w-full border rounded-lg px-4 py-2"
+          />
+        </div>
+
+        <!-- Category -->
+        <div class="flex flex-col col-span-1">
+          <label class="block text-sm font-medium mb-1 text-gray-700"
+            >Category</label
+          >
+          <select
+            formControlName="category"
+            class="w-full border rounded-lg px-4 py-2"
+          >
+            <option value="" disabled selected>Select a category</option>
+            <option value="Dashboard">Dashboard</option>
+            <option value="Landing">Landing Page</option>
+            <option value="Church">Church</option>
+            <option value="Ecommerce">E-commerce</option>
+            <option value="Portfolio">Portfolio</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Cover Photo -->
+      <div class="flex flex-col col-span-1">
+        <label class="block text-sm font-medium mb-1 text-gray-700"
+          >Cover Photo</label
+        >
+        <div
+          class="relative w-full h-32 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden cursor-pointer hover:border-[#005480] hover:text-[#005480] transition"
+        >
+          <ng-container *ngIf="coverPhotoPreviewUrl; else placeholder">
+            <!-- Cover image -->
+            <img
+              [src]="coverPhotoPreviewUrl"
+              alt="Cover Preview"
+              class="absolute inset-0 w-full h-full object-cover"
+            />
+
+            <!-- Overlay with text -->
+            <div
+              class="absolute inset-0 bg-black/30 z-10 flex items-center justify-center text-white text-sm font-semibold opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+            >
+              Click to select image
+            </div>
+          </ng-container>
+
+          <ng-template #placeholder>
+            <div
+              class="flex flex-col items-center justify-center w-full h-full text-gray-400"
+            >
+              <span class="material-icons text-4xl mb-2">cloud_upload</span>
+              <span class="text-sm font-medium"
+                >Click to upload cover photo</span
+              >
+            </div>
+          </ng-template>
+
+          <input
+            type="file"
+            #coverPhotoInput
+            accept="image/*"
+            (change)="onCoverPhotoSelected($event)"
+            class="absolute inset-0 opacity-0 cursor-pointer"
+          />
+        </div>
+      </div>
+
+      <!-- Description (full width) -->
+      <div class="md:col-span-3 flex flex-col">
+        <label class="block text-sm font-medium mb-1 text-gray-700"
+          >Description</label
+        >
+        <textarea
+          formControlName="description"
+          rows="3"
+          placeholder="Brief description..."
+          class="w-full border rounded-lg px-4 py-2"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Keep rest of the code below unchanged -->
+
+    <!-- Add Tiers CTA Section -->
+    <div
+      class="border border-dashed border-[#005480] rounded-lg p-6 bg-white/80 shadow-sm"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <span class="material-icons text-[#005480]">layers</span>
+          Template Tiers
+          <span
+            *ngIf="tiers.length > 0"
+            class="ml-2 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full"
+          >
+            {{ tiers.length }} added
+          </span>
+        </h2>
+        <button
+          type="button"
+          (click)="addTier()"
+          class="inline-flex items-center gap-1 text-sm text-white bg-[#005480] hover:bg-[#004066] px-4 py-2 rounded-md shadow transition"
+        >
+          <span class="material-icons text-base">add</span>
+          Add Tier
+        </button>
+      </div>
+
+      <div
+        *ngIf="tiers.length === 0"
+        class="text-center text-gray-500 text-sm py-6"
+      >
+        No tiers added yet. Click <span class="font-semibold">Add Tier</span> to
+        get started.
+      </div>
+    </div>
+
+    <!-- Tiers Section -->
+    <div *ngIf="tiers.length > 0" class="space-y-6">
+      <div
+        *ngFor="let tier of tiers.controls; let tierIndex = index"
+        [formGroup]="tier"
+        class="relative border rounded-lg p-6 shadow-sm bg-white"
+      >
+        <!-- Remove Tier Icon Button -->
+        <button
+          type="button"
+          (click)="removeTier(tierIndex)"
+          class="absolute top-3 right-3 text-red-500 hover:text-red-700"
+          aria-label="Remove Tier"
+        >
+          <span class="material-icons text-lg">delete</span>
+        </button>
+
+        <!-- Tier Name -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1 text-gray-700"
+            >Tier Name</label
+          >
+          <input
+            formControlName="tierName"
+            type="text"
+            placeholder="e.g. Basic, Premium"
+            class="w-full border rounded-lg px-4 py-2"
+          />
+        </div>
+
+        <!-- Demo Link -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1 text-gray-700"
+            >Demo link</label
+          >
+          <input
+            formControlName="tierDemoLink"
+            type="text"
+            class="w-full border rounded-lg px-4 py-2"
+          />
+        </div>
+
+        <!-- Tutorial Link -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1 text-gray-700"
+            >Tutorial link</label
+          >
+          <input
+            formControlName="tierTutorialLink"
+            type="text"
+            class="w-full border rounded-lg px-4 py-2"
+          />
+        </div>
+
+        <!-- Features Section -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-sm font-medium text-gray-700">Features</label>
+            <button
+              type="button"
+              (click)="addFeature(tierIndex)"
+              class="text-[#005480] text-sm font-semibold hover:underline"
+            >
+              + Add Custom Feature
+            </button>
+          </div>
+
+          <div
+            *ngFor="
+              let featureCtrl of getFeatures(tierIndex).controls;
+              let featureIndex = index
+            "
+            class="flex items-center mb-2"
+          >
+            <app-autocomplete
+              class="w-full"
+              [items]="predefinedFeatures"
+              [initialValue]="featureCtrl.value"
+              (valueChanged)="onFeatureInput(tierIndex, featureIndex, $event)"
+            ></app-autocomplete>
+            <button
+              type="button"
+              (click)="removeFeature(tierIndex, featureIndex)"
+              class="ml-2 text-red-500 text-sm hover:text-red-700"
+              aria-label="Remove feature"
+            >
+              <span class="material-icons">delete</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="mt-8 flex justify-end">
+      <button
+        type="button"
+        (click)="pageState = 'templates'"
+        class="text-gray-600 hover:text-gray-800 px-4 py-2 rounded-md mr-4"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="bg-gradient-to-r from-[#005480] to-[#007a6f] text-white px-6 py-3 rounded-lg shadow-md hover:scale-105 transition"
+      >
+        Add Template
+      </button>
+    </div>
+  </form>
+</div>

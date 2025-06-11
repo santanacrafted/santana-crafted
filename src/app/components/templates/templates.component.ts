@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -18,6 +19,16 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import {
+  selectAddTemplateLoading,
+  selectDeleteTemplateLoading,
+  selectTemplateLoading,
+  selectTemplates,
+  selectUpdateTemplateLoading,
+} from '../../state/templates/templates.selector';
+import { loadTemplates } from '../../state/templates/templates.actions';
 
 @Component({
   selector: 'app-templates',
@@ -44,7 +55,7 @@ import {
     ]),
   ],
 })
-export class TemplatesComponent implements OnInit {
+export class TemplatesComponent implements OnInit, AfterViewInit {
   storeImg = '/assets/images/minimal-store.png';
   churchImg = '/assets/images/church-live-stream.png';
 
@@ -59,7 +70,7 @@ export class TemplatesComponent implements OnInit {
   @ViewChild('filterBar') filterBar!: ElementRef;
   isSticky = false;
 
-  filteredTemplates = [...this.templates];
+  filteredTemplates: any[] = [];
   categories = [
     'All',
     'Dashboard',
@@ -78,14 +89,33 @@ export class TemplatesComponent implements OnInit {
   cartItems: CartItem[] = [];
   cartCount = 0;
 
+  templates$?: Observable<any[]>;
+  selectTemplatesLoading$?: Observable<boolean>;
+  selectDeleteTemplatesLoading$?: Observable<boolean>;
+  selectUpdateTemplatesLoading$?: Observable<boolean>;
+  selectCreateTemplatesLoading$?: Observable<boolean>;
+  templatesLoaded: boolean = false;
   constructor(
     private cartService: CartService,
     private cd: ChangeDetectorRef,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private store: Store
   ) {}
 
   ngOnInit() {
+    this.store.dispatch(loadTemplates());
+    this.templates$ = this.store.select(selectTemplates);
+    this.selectTemplatesLoading$ = this.store.select(selectTemplateLoading);
+    this.selectDeleteTemplatesLoading$ = this.store.select(
+      selectDeleteTemplateLoading
+    );
+    this.selectUpdateTemplatesLoading$ = this.store.select(
+      selectUpdateTemplateLoading
+    );
+    this.selectCreateTemplatesLoading$ = this.store.select(
+      selectAddTemplateLoading
+    );
     this.templates = this.cartService.templates;
     const tierParam = this.route.snapshot.queryParamMap.get('tier');
     if (tierParam && this.tiers.includes(tierParam)) {
@@ -104,8 +134,14 @@ export class TemplatesComponent implements OnInit {
       }
 
       this.applyFilters();
-      this.cd.detectChanges();
     });
+  }
+
+  ngAfterViewInit(): void {
+    // this.templates$?.subscribe((templates) => {
+    //   this.filteredTemplates = [...templates];
+    //   this.cd.detectChanges();
+    // });
   }
 
   @HostListener('window:scroll', [])
@@ -196,14 +232,26 @@ export class TemplatesComponent implements OnInit {
   }
 
   applyFilters() {
-    this.filteredTemplates = this.templates.filter((template) => {
-      const categoryMatch =
-        this.selectedCategory === 'All' ||
-        template.category === this.selectedCategory;
-      const tierMatch =
-        this.selectedTier === 'All' ||
-        template.tiers.includes(this.selectedTier);
-      return categoryMatch && tierMatch;
+    if (!this.templates$) {
+      return;
+    }
+
+    this.templates$.subscribe((templates) => {
+      this.filteredTemplates = templates.filter((template) => {
+        const categoryMatch =
+          this.selectedCategory === 'All' ||
+          template.category === this.selectedCategory;
+
+        const tierMatch =
+          this.selectedTier === 'All' ||
+          template.tiers?.some(
+            (tier: any) => tier.tierName === this.selectedTier
+          );
+
+        return categoryMatch && tierMatch;
+      });
+
+      this.cd.detectChanges();
     });
   }
 

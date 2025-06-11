@@ -1,0 +1,405 @@
+<section class="p-4 sm:p-6">
+  <div>
+    <!-- Page Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold text-[#003d2e]">
+        <span class="material-icons">insights</span>
+        Analytics Overview
+      </h1>
+      <p class="text-gray-600">
+        Monitor user behavior, device trends, and key engagement metrics.
+      </p>
+    </div>
+    <div class="justify-end flex">
+      <label
+        for="timeRange"
+        class="text-sm font-medium text-gray-700 mr-2 mt-[6px]"
+        >Time Range:</label
+      >
+      <select
+        id="timeRange"
+        [(ngModel)]="selectedTimeRange"
+        (ngModelChange)="onTimeRangeChange()"
+        class="border border-gray-300 rounded px-3 py-1 text-sm"
+      >
+        <option value="7daysAgo">Last 7 Days</option>
+        <option value="30daysAgo">Last 30 Days</option>
+        <option value="90daysAgo">Last 90 Days</option>
+        <option value="180daysAgo">Last 6 Months</option>
+        <option value="365daysAgo">Last 1 Year</option>
+      </select>
+    </div>
+  </div>
+
+  <ng-container *ngIf="analyticsData$ | async as data">
+    <ng-container *ngIf="data.geo?.rows as geoRows">
+      <div class="bg-white rounded-xl shadow-md p-6 mt-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold">🌍 Active Users by Country</h2>
+          <button
+            class="text-sm text-blue-600 underline"
+            (click)="showGeoChart = !showGeoChart"
+          >
+            {{ showGeoChart ? "Show Table" : "Show Chart" }}
+          </button>
+        </div>
+        <p class="text-sm text-gray-600 mb-4">
+          View the geographic distribution of your website's visitors.
+          Understand where your audience is located.
+        </p>
+
+        <div *ngIf="!showGeoChart" class="overflow-x-auto">
+          <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-100 text-gray-700">
+              <tr>
+                <th class="py-2 px-4">Country</th>
+                <th class="py-2 px-4">Active Users</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of geoRows" class="border-b hover:bg-gray-50">
+                <td class="py-2 px-4">{{ row.dimensionValues[0].value }}</td>
+                <td class="py-2 px-4">{{ row.metricValues[0].value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="showGeoChart" class="mt-4">
+          <ngx-charts-bar-vertical
+            [results]="geoChartData$ | async"
+            [scheme]="'vivid'"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legend]="false"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            xAxisLabel="Country"
+            yAxisLabel="Users"
+          >
+          </ngx-charts-bar-vertical>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="data.source?.rows as sourceRows">
+      <div class="bg-white rounded-xl shadow-md p-6 mt-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold">🌐 Traffic Sources</h2>
+          <button
+            class="text-sm text-blue-600 underline"
+            (click)="showSourceChart = !showSourceChart"
+          >
+            {{ showSourceChart ? "Show Table" : "Show Chart" }}
+          </button>
+        </div>
+        <p class="text-sm text-gray-600 mb-4">
+          Understand where your visitors are coming from. For example, "google /
+          organic" means users came via unpaid search, while "direct / none"
+          means they typed your URL or bookmarked it.
+        </p>
+
+        <div *ngIf="!showSourceChart" class="overflow-x-auto">
+          <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-100 text-gray-700">
+              <tr>
+                <th class="py-2 px-4">Source / Medium</th>
+                <th class="py-2 px-4">Sessions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let row of sourceRows"
+                class="border-b hover:bg-gray-50"
+              >
+                <td class="py-2 px-4">{{ row.dimensionValues[0].value }}</td>
+                <td class="py-2 px-4">{{ row.metricValues[0].value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="showSourceChart" class="mt-4">
+          <ngx-charts-bar-horizontal
+            [results]="sourceChartData$ | async"
+            [scheme]="'vivid'"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legend]="false"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            xAxisLabel="Sessions"
+            yAxisLabel="Source"
+          >
+          </ngx-charts-bar-horizontal>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="data.device?.rows as deviceRows">
+      <div class="bg-white rounded-xl shadow-md p-6 mt-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold">📱 Devices & Platforms</h2>
+          <button
+            class="text-sm text-blue-600 underline"
+            (click)="showDeviceChart = !showDeviceChart"
+          >
+            {{ showDeviceChart ? "Show Table" : "Show Chart" }}
+          </button>
+        </div>
+        <p class="text-sm text-gray-600 mb-4">
+          See which platforms and device types your users are using.
+        </p>
+
+        <div *ngIf="!showDeviceChart" class="overflow-x-auto">
+          <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-100 text-gray-700">
+              <tr>
+                <th class="py-2 px-4">Platform</th>
+                <th class="py-2 px-4">Device Category</th>
+                <th class="py-2 px-4">Active Users</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let row of deviceRows"
+                class="border-b hover:bg-gray-50"
+              >
+                <td class="py-2 px-4">{{ row.dimensionValues[0].value }}</td>
+                <td class="py-2 px-4">{{ row.dimensionValues[1].value }}</td>
+                <td class="py-2 px-4">{{ row.metricValues[0].value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="showDeviceChart" class="mt-4">
+          <ngx-charts-pie-chart
+            [results]="deviceChartData$ | async"
+            [scheme]="'vivid'"
+            [legend]="true"
+            [labels]="true"
+            [doughnut]="true"
+          >
+          </ngx-charts-pie-chart>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="data.userType?.rows as userTypeRows">
+      <div class="bg-white rounded-xl shadow-md p-6 mt-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold">👥 New vs. Returning Users</h2>
+          <button
+            class="text-sm text-blue-600 underline"
+            (click)="showUserTypeChart = !showUserTypeChart"
+          >
+            {{ showUserTypeChart ? "Show Table" : "Show Chart" }}
+          </button>
+        </div>
+        <p class="text-sm text-gray-600 mb-4">
+          This shows whether visitors are new or returning. Returning users may
+          indicate stronger engagement or interest.
+        </p>
+
+        <div *ngIf="!showUserTypeChart" class="overflow-x-auto">
+          <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-100 text-gray-700">
+              <tr>
+                <th class="py-2 px-4">User Type</th>
+                <th class="py-2 px-4">Active Users</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let row of userTypeRows"
+                class="border-b hover:bg-gray-50"
+              >
+                <td class="py-2 px-4 capitalize">
+                  {{ row.dimensionValues[0].value }}
+                </td>
+                <td class="py-2 px-4">{{ row.metricValues[0].value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="showUserTypeChart" class="mt-4">
+          <ngx-charts-pie-chart
+            [results]="userTypeChartData$ | async"
+            [scheme]="'vivid'"
+            [legend]="true"
+            [labels]="true"
+            [doughnut]="true"
+          >
+          </ngx-charts-pie-chart>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="data.engagement?.rows as engagementRows">
+      <div class="bg-white rounded-xl shadow-md p-6 mt-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold">⏱️ User Engagement</h2>
+          <button
+            class="text-sm text-blue-600 underline"
+            (click)="showEngagementChart = !showEngagementChart"
+          >
+            {{ showEngagementChart ? "Show Table" : "Show Chart" }}
+          </button>
+        </div>
+        <p class="text-sm text-gray-600 mb-4">
+          Understand how much time users are spending on your site and how many
+          sessions had meaningful interactions.
+        </p>
+
+        <div
+          *ngIf="!showEngagementChart"
+          class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm"
+        >
+          <div class="bg-gray-50 p-4 rounded-md border">
+            <p class="text-gray-500">Average Engagement</p>
+            <p class="text-lg font-semibold">
+              {{
+                (engagementRows[0]?.metricValues[0]?.value || 0) / 60
+                  | number : "1.1-1"
+              }}
+              minutes
+            </p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-md border">
+            <p class="text-gray-500">Engaged Sessions</p>
+            <p class="text-lg font-semibold">
+              {{ engagementRows[0]?.metricValues[1]?.value || 0 }}
+            </p>
+          </div>
+        </div>
+
+        <div *ngIf="showEngagementChart" class="mt-4">
+          <ngx-charts-bar-vertical
+            [results]="userEngagementChartData$ | async"
+            [scheme]="'vivid'"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legend]="false"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            xAxisLabel="Metric"
+            yAxisLabel="Value"
+          >
+          </ngx-charts-bar-vertical>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="data.pages?.rows as pageRows">
+      <div class="bg-white rounded-xl shadow-md p-6 mt-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold">📄 Top Pages</h2>
+          <button
+            class="text-sm text-blue-600 underline"
+            (click)="showPageChart = !showPageChart"
+          >
+            {{ showPageChart ? "Show Table" : "Show Chart" }}
+          </button>
+        </div>
+        <p class="text-sm text-gray-600 mb-4">
+          Discover which pages get the most traffic. This helps you understand
+          what content attracts your visitors.
+        </p>
+
+        <div *ngIf="!showPageChart" class="overflow-x-auto">
+          <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-100 text-gray-700">
+              <tr>
+                <th class="py-2 px-4">Page Path</th>
+                <th class="py-2 px-4">Page Views</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let row of pageRows"
+                class="border-b hover:bg-gray-50"
+              >
+                <td class="py-2 px-4 text-blue-600">
+                  {{ row.dimensionValues[0].value }}
+                </td>
+                <td class="py-2 px-4">{{ row.metricValues[0].value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="showPageChart" class="mt-4">
+          <ngx-charts-bar-horizontal
+            [results]="pageChartData$ | async"
+            [scheme]="'vivid'"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legend]="false"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            xAxisLabel="Page Views"
+            yAxisLabel="Page Path"
+          >
+          </ngx-charts-bar-horizontal>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="data.events?.rows as eventRows">
+      <div class="bg-white rounded-xl shadow-md p-6 mt-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold">🧩 User Events</h2>
+          <button
+            class="text-sm text-blue-600 underline"
+            (click)="showEventChart = !showEventChart"
+          >
+            {{ showEventChart ? "Show Table" : "Show Chart" }}
+          </button>
+        </div>
+        <p class="text-sm text-gray-600 mb-4">
+          These events track user actions like viewing a page or beginning a
+          session. Use this to measure interaction quality.
+        </p>
+
+        <div *ngIf="!showEventChart" class="overflow-x-auto">
+          <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-100 text-gray-700">
+              <tr>
+                <th class="py-2 px-4">Event Name</th>
+                <th class="py-2 px-4">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let row of eventRows"
+                class="border-b hover:bg-gray-50"
+              >
+                <td class="py-2 px-4 capitalize">
+                  {{ row.dimensionValues[0].value }}
+                </td>
+                <td class="py-2 px-4">{{ row.metricValues[0].value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="showEventChart" class="mt-4">
+          <ngx-charts-bar-vertical
+            [results]="eventChartData$ | async"
+            [scheme]="'vivid'"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legend]="false"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            xAxisLabel="Event Name"
+            yAxisLabel="Count"
+          >
+          </ngx-charts-bar-vertical>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</section>

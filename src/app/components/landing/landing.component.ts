@@ -16,7 +16,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 
 @Component({
   selector: 'app-landing',
-  imports: [SwiperComponent, CommonModule, TranslateModule, ButtonComponent],
+  imports: [CommonModule, TranslateModule, ButtonComponent],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',
 })

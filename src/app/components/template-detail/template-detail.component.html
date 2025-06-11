@@ -9,7 +9,7 @@
     <!-- Cover Image -->
     <div class="rounded-xl overflow-hidden shadow-lg mb-10">
       <img
-        [src]="template?.cover"
+        [src]="template?.coverImage"
         [alt]="template?.name"
         class="w-full h-auto object-cover"
       />
@@ -36,42 +36,22 @@
           *ngFor="let tier of template.tiers"
           (click)="selectedTier = tier"
           [ngClass]="{
-            'bg-[#003d2e] text-white': selectedTier === tier,
-            'bg-gray-100 text-[#003d2e]': selectedTier !== tier
+            'bg-[#003d2e] text-white': selectedTier.tierName === tier.tierName,
+            'bg-gray-100 text-[#003d2e]':
+              selectedTier.tierName !== tier.tierName
           }"
           class="px-4 py-2 rounded-full font-medium text-sm border border-[#003d2e] transition-all"
         >
-          {{ tier }}
+          {{ tier.tierName }}
         </button>
       </div>
 
       <!-- Tier-specific Features -->
-      <div *ngIf="selectedTier === 'Basic'">
-        <ul class="list-disc list-inside text-gray-700 space-y-2">
-          <li>Mobile-optimized homepage</li>
-          <li>Basic contact or inquiry form</li>
-          <li>Donation or PayPal integration</li>
-          <li>Minimal layout and clean design</li>
-        </ul>
-      </div>
-
-      <div *ngIf="selectedTier === 'Standard'">
-        <ul class="list-disc list-inside text-gray-700 space-y-2">
-          <li>Everything in Basic</li>
-          <li>Multilingual support (EN/ES)</li>
-          <li>Team, blog, and services pages</li>
-          <li>Firebase integrated contact form</li>
-        </ul>
-      </div>
-
-      <div *ngIf="selectedTier === 'Premium'">
-        <ul class="list-disc list-inside text-gray-700 space-y-2">
-          <li>Everything in Standard</li>
-          <li>Admin dashboard + CMS integration</li>
-          <li>Gallery and media manager</li>
-          <li>Dark mode toggle and advanced UI controls</li>
-        </ul>
-      </div>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li *ngFor="let feature of selectedTier.features">
+          {{ feature }}
+        </li>
+      </ul>
     </div>
 
     <!-- Demo Link -->
@@ -82,7 +62,7 @@
         purchasing.
       </p>
       <a
-        [href]="template?.demoUrl"
+        [href]="template?.demoLink"
         target="_blank"
         rel="noopener noreferrer"
         class="inline-block bg-[#003d2e] text-white px-6 py-3 rounded-md text-sm font-medium hover:bg-[#001f18] transition"
@@ -99,14 +79,10 @@
         template.
       </p>
       <div class="aspect-w-16 aspect-h-20">
-        <iframe
+        <app-video-embed
           class="w-full rounded-xl shadow-md"
-          src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
-          title="Setup Instructions"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
+          [videoUrl]="template?.tutorialLink"
+        ></app-video-embed>
       </div>
     </div>
   </div>
