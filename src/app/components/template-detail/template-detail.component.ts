@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CartService } from '../../shared/services/cart.service';
+import { CartItem, CartService } from '../../shared/services/cart.service';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { loadTemplates } from '../../state/templates/templates.actions';
@@ -23,7 +23,8 @@ export class TemplateDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private cart: CartService,
-    private store: Store
+    private store: Store,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -33,6 +34,31 @@ export class TemplateDetailComponent implements OnInit {
     this.templates$.subscribe((templates) => {
       this.template = templates.find((x) => x.id === this.templateId);
       this.selectedTier = this.template?.tiers?.[0];
+      console.log(this.selectedTier);
     });
+  }
+
+  addToCart() {
+    const priceMap: Record<'Basic' | 'Standard' | 'Premium', number> = {
+      Basic: 29,
+      Standard: 69,
+      Premium: 129,
+    };
+
+    const typedTier = this.selectedTier.tierName as
+      | 'Basic'
+      | 'Standard'
+      | 'Premium';
+
+    const cartItem: CartItem = {
+      name: this.template.name,
+      tier: this.selectedTier.tierName,
+      price: priceMap[typedTier],
+    };
+    this.cart.addItem(cartItem);
+    alert(
+      `Added "${cartItem.name}" (${cartItem.tier}) to cart for $${cartItem.price}`
+    );
+    this.cd.detectChanges();
   }
 }

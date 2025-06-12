@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GalleryManagementComponent } from './gallery-management.component';
+import { GalleryManagementComponent } from './templates-management.component';
 
 describe('GalleryManagementComponent', () => {
   let component: GalleryManagementComponent;
@@ -8,9 +8,8 @@ describe('GalleryManagementComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GalleryManagementComponent]
-    })
-    .compileComponents();
+      imports: [GalleryManagementComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(GalleryManagementComponent);
     component = fixture.componentInstance;

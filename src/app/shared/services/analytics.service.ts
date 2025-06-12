@@ -7,6 +7,7 @@ export class AnalyticsService {
   constructor(private functions: Functions) {}
 
   getDashboardData(startDate: string) {
+    console.log('Fetching dashboard data for start date:', startDate);
     const callable = httpsCallable(this.functions, 'getAnalyticsDashboards');
     return callable({ startDate });
   }

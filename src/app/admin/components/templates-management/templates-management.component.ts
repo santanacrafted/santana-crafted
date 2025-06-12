@@ -23,6 +23,7 @@ import {
   addTemplate,
   deleteTemplate,
   loadTemplates,
+  updateTemplate,
 } from '../../../state/templates/templates.actions';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable, of, take } from 'rxjs';
@@ -45,13 +46,11 @@ import { AutocompleteComponent } from '../../../shared/autocomplete/autocomplete
     FormsModule,
     AutocompleteComponent,
   ],
-  templateUrl: './gallery-management.component.html',
-  styleUrl: './gallery-management.component.scss',
+  templateUrl: './templates-management.component.html',
+  styleUrl: './templates-management.component.scss',
 })
-export class GalleryManagementComponent implements OnInit {
+export class TemplatesManagementComponent implements OnInit {
   showForm = false;
-  @ViewChild('editAlbumTemplate') editAlbumTemplate!: TemplateRef<any>;
-  @ViewChild('newAlbumTemplate') newAlbumTemplate!: TemplateRef<any>;
   @ViewChild('tiersContainer') tiersContainer!: ElementRef;
   pageState: 'add' | 'edit' | 'templates' = 'templates';
   templateForm: FormGroup;
@@ -74,6 +73,7 @@ export class GalleryManagementComponent implements OnInit {
   supportedLanguages = ['en', 'es'];
   activeLang = 'en';
   editAlbumForm!: FormGroup;
+  templateToEdit: any = null;
   predefinedFeatures = [
     'Responsive Design',
     'SEO Optimized',
@@ -90,14 +90,13 @@ export class GalleryManagementComponent implements OnInit {
   };
 
   previewUrl: string | null = null;
-  newCoverImage: File | null = null;
   selectedPredefinedFeature: string[] = [];
-  coverPhotoPreviewUrl: string | null = null;
+  coverPhotoPreviewUrl: string | File | null = null;
+  formSubmitted = false;
 
   constructor(
     private fb: FormBuilder,
     private store: Store,
-    private popupService: PopupService,
     private popup: PopupService,
     private cdr: ChangeDetectorRef
   ) {
@@ -105,7 +104,6 @@ export class GalleryManagementComponent implements OnInit {
       name: ['', Validators.required],
       description: ['', Validators.required],
       category: ['', Validators.required],
-      demoLink: [''],
       tiers: this.fb.array([]),
     });
     this.templates$ = this.store.select(selectTemplates);
@@ -129,69 +127,87 @@ export class GalleryManagementComponent implements OnInit {
     return this.editAlbumForm.get([groupName, lang]) as FormControl;
   }
 
-  onEditTemplate(event: any) {
-    this.previewUrl = null;
-    this.newCoverImage = null;
-    this.activeLang = 'en';
+  onEditTemplate(template: any) {
+    console.log('Editing template:', template);
+    this.templateToEdit = template;
+    this.pageState = 'edit';
+    // Reset form
+    this.templateForm.reset();
 
-    this.editAlbumForm = this.fb.group({
-      name: [event.name || ''],
-      description: [event.description || ''],
+    // Prefill form basic fields
+    this.templateForm.patchValue({
+      name: template.name || '',
+      description: template.description || '',
+      category: template.category || '',
     });
 
-    this.popup.open(this.editAlbumTemplate, {
-      albumForm: this.templateForm,
-      album: event,
-      isLoading: true,
-      close: () => {
-        this.popup.close();
-      },
-      onSubmit: () => {
-        if (this.templateForm.invalid) return;
-      },
-    });
-  }
+    // Set cover photo preview (you cannot set coverPhotoFile unless the user uploads it again)
+    this.coverPhotoPreviewUrl = template.coverImage || '';
 
-  openAddAlbumPopup() {
-    this.pageState = 'add';
-    // this.popup.open(this.newAlbumTemplate, {
-    //   templateForm: this.templateForm,
-    //   close: () => {
-    //     this.popup.close();
-    //   },
-    // });
+    // Clear tiers FormArray
+    this.tiers.clear();
+
+    // Rebuild tiers
+    if (template.tiers && Array.isArray(template.tiers)) {
+      template.tiers.forEach((tier: any) => {
+        const tierGroup = this.fb.group({
+          tierName: this.fb.nonNullable.control(
+            tier.tierName || '',
+            Validators.required
+          ),
+          tierDemoLink: this.fb.nonNullable.control(tier.tierDemoLink || ''),
+          tierTutorialLink: this.fb.nonNullable.control(
+            tier.tierTutorialLink || ''
+          ),
+          features: this.fb.array<FormControl<string>>([]),
+        });
+
+        // Prefill features
+        const featuresArray = tierGroup.get('features') as FormArray;
+        if (tier.features && Array.isArray(tier.features)) {
+          tier.features.forEach((feature: string) => {
+            featuresArray.push(this.fb.control(feature));
+          });
+        }
+
+        // Add the tier group to the FormArray
+        this.tiers.push(tierGroup);
+      });
+    }
+
+    // Optional: If you want to reset the formSubmitted flag when editing
+    this.formSubmitted = false;
   }
 
   setActiveLang(lang: string) {
     this.activeLang = lang;
   }
 
-  onCoverImageSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (file) {
-      this.newCoverImage = file;
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewUrl = reader.result as string;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
+  onUpdateAlbum(templateId: string) {
+    this.formSubmitted = true;
 
-  onUpdateAlbum(albumId: string) {
-    const formValue = this.editAlbumForm.value;
-    // this.store.dispatch(
-    //   updateAlbum({
-    //     albumId,
-    //     updatedTitleEn: formValue.name.en,
-    //     updatedTitleEs: formValue.name.es,
-    //     updatedDescriptionEn: formValue.description.en,
-    //     updatedDescriptionEs: formValue.description.es,
-    //     newCoverPhotoFile: this.newCoverImage || undefined,
-    //   })
-    // );
-    this.popup.close();
+    if (
+      this.templateForm.invalid ||
+      (!this.coverPhotoFile && !this.templateToEdit?.coverImage)
+    ) {
+      this.templateForm.markAllAsTouched();
+      return;
+    }
+
+    const { name, description, category, tiers } = this.templateForm.value;
+
+    this.store.dispatch(
+      updateTemplate({
+        templateId,
+        updatedTitle: name,
+        updatedDescription: description,
+        newCoverPhotoFile: this.coverPhotoFile || undefined,
+        tiers: tiers,
+        category: category,
+      })
+    );
+
+    this.clearForm();
   }
 
   onCoverPhotoSelected(event: Event) {
@@ -208,15 +224,14 @@ export class GalleryManagementComponent implements OnInit {
   }
 
   async onCreateAlbum() {
-    console.log(this.templateForm.value);
+    this.formSubmitted = true;
 
     if (this.templateForm.invalid || !this.coverPhotoFile) {
-      console.error('Form invalid or cover photo not selected');
+      this.templateForm.markAllAsTouched();
       return;
     }
 
-    const { name, description, category, demoLink, tutorialLink, tiers } =
-      this.templateForm.value;
+    const { name, description, category, tiers } = this.templateForm.value;
 
     this.store.dispatch(
       addTemplate({
@@ -224,22 +239,25 @@ export class GalleryManagementComponent implements OnInit {
         description: description,
         coverPhotoFile: this.coverPhotoFile,
         tiers: tiers,
-        demoLink: demoLink,
-        tutorialLink: tutorialLink,
         category: category,
       })
     );
-    this.pageState = 'templates';
+    this.clearForm();
+    this.cdr.detectChanges();
+    this.popup.close();
+  }
+
+  clearForm() {
     this.templateForm.reset();
     this.coverPhotoFile = null;
     this.coverPhotoPreviewUrl = null;
     this.tiers.clear();
     this.previewUrl = null;
-    this.newCoverImage = null;
+    this.templateToEdit = null;
+    this.formSubmitted = false;
+    this.pageState = 'templates';
     this.cdr.detectChanges();
-    this.popup.close();
   }
-
   onDeleteAlbum(templateId: string): void {
     this.store.dispatch(
       deleteTemplate({

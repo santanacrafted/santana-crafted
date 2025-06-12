@@ -61,8 +61,6 @@ export const addTemplate = onCall(
       templateName,
       description,
       tiers,
-      demoLink,
-      tutorialLink,
       coverPhotoUrl,
       category,
     } = request.data;
@@ -81,8 +79,6 @@ export const addTemplate = onCall(
         name: templateName || '',
         description: description || '',
         tiers: tiers || [],
-        demoLink: demoLink || '',
-        tutorialLink: tutorialLink || '',
         coverImage: coverPhotoUrl,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         category: category || '',
@@ -95,7 +91,9 @@ export const addTemplate = onCall(
         templateId,
         templateName,
         description,
+        tiers,
         coverPhotoUrl,
+        category,
       };
     } catch (error: any) {
       console.error('Firestore error:', error);
@@ -132,9 +130,7 @@ export const updateTemplate = onCall(
       templateId,
       updatedTitle,
       updatedDescription,
-      updatedTiers,
-      demoLink,
-      tutorialLink,
+      tiers,
       newCoverPhotoUrl,
       category,
     } = request.data;
@@ -149,9 +145,7 @@ export const updateTemplate = onCall(
       const updateData: any = {
         name: updatedTitle || '',
         description: updatedDescription || '',
-        tiers: updatedTiers || [],
-        demoLink: demoLink || '',
-        tutorialLink: tutorialLink || '',
+        tiers: tiers || [],
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         category: category || '',
       };
@@ -164,7 +158,7 @@ export const updateTemplate = onCall(
 
       return {
         success: true,
-        ...(newCoverPhotoUrl && { coverImage: newCoverPhotoUrl }),
+        ...updateData,
       };
     } catch (error: any) {
       console.error('Error updating template:', error);
@@ -198,7 +192,7 @@ export const getAnalyticsSummary = onCall(
       console.log('[✅] Got access token');
 
       const response = await fetch(
-        'https://analyticsdata.googleapis.com/v1beta/properties/490895302:runReport',
+        'https://analyticsdata.googleapis.com/v1beta/properties/492499723:runReport',
         {
           method: 'POST',
           headers: {
@@ -235,7 +229,7 @@ export const getAnalyticsDashboards = onCall(
 
     const runReport = async (dimensions: any[], metrics: any[]) => {
       const response = await fetch(
-        'https://analyticsdata.googleapis.com/v1beta/properties/490895302:runReport',
+        'https://analyticsdata.googleapis.com/v1beta/properties/492499723:runReport',
         {
           method: 'POST',
           headers: {

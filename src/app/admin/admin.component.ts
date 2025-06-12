@@ -47,7 +47,6 @@ export class AdminComponent {
   ) {
     this.user$ = authState(this.auth);
     this.user$.subscribe((user) => {
-      console.log('User state:', user);
       if (user) {
         user.getIdTokenResult().then((result: any) => {
           this.userInfo = {

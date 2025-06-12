@@ -1,4 +1,7 @@
 <section class="bg-white text-[#003d2e] py-16 px-6 md:px-12">
+  <a (click)="addToCart()" class="flex justify-end cursor-pointer"
+    >Add to Cart</a
+  >
   <div class="max-w-6xl mx-auto">
     <!-- Header -->
     <div class="text-center mb-12">
@@ -19,10 +22,7 @@
     <div class="mb-12">
       <h2 class="text-2xl font-semibold mb-4">Who is this template for?</h2>
       <p class="text-gray-700 leading-relaxed">
-        This template is ideal for churches, nonprofits, businesses, and
-        creatives looking to launch a professional, mobile-friendly website with
-        minimal setup. Whether you're sharing events, offering donations, or
-        showcasing services — this template has you covered.
+        {{ template?.description }}
       </p>
     </div>
 
@@ -62,7 +62,7 @@
         purchasing.
       </p>
       <a
-        [href]="template?.demoLink"
+        [href]="selectedTier?.tierDemoLink"
         target="_blank"
         rel="noopener noreferrer"
         class="inline-block bg-[#003d2e] text-white px-6 py-3 rounded-md text-sm font-medium hover:bg-[#001f18] transition"
@@ -81,7 +81,7 @@
       <div class="aspect-w-16 aspect-h-20">
         <app-video-embed
           class="w-full rounded-xl shadow-md"
-          [videoUrl]="template?.tutorialLink"
+          [videoUrl]="selectedTier?.tierTutorialLink"
         ></app-video-embed>
       </div>
     </div>

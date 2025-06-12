@@ -52,9 +52,7 @@ export class TemplatesEffects {
           templateId,
           updatedTitle,
           updatedDescription,
-          demoLink,
           tiers,
-          tutorialLink,
           newCoverPhotoFile,
           category,
         }) =>
@@ -65,22 +63,19 @@ export class TemplatesEffects {
               updatedDescription,
               newCoverPhotoFile,
               tiers,
-              demoLink,
-              tutorialLink,
               category
             )
           ).pipe(
             map((res) => {
+              console.log('Update Template Response:', res);
               return updateTemplateSuccess({
                 templateId,
                 updatedFields: {
                   name: updatedTitle,
                   description: updatedDescription,
-                  demoLink: demoLink,
                   tiers: tiers,
                   category: category,
                   updatedAt: new Date().toISOString(),
-                  tutorialLink: tutorialLink,
                   ...(res.data.coverImage && {
                     coverImage: res.data.coverImage,
                   }),
@@ -97,22 +92,12 @@ export class TemplatesEffects {
     this.actions$.pipe(
       ofType(addTemplate),
       mergeMap(
-        ({
-          templateName,
-          description,
-          coverPhotoFile,
-          tiers,
-          demoLink,
-          tutorialLink,
-          category,
-        }) => {
+        ({ templateName, description, coverPhotoFile, tiers, category }) => {
           return from(
             this.templateService.addTemplate(
               templateName,
               description,
               tiers,
-              demoLink,
-              tutorialLink,
               coverPhotoFile,
               category
             )
@@ -125,8 +110,6 @@ export class TemplatesEffects {
                   description: description,
                   coverImage: res.coverPhotoUrl,
                   tiers: tiers,
-                  demoLink: demoLink,
-                  tutorialLink: tutorialLink,
                   category: category,
                   createdAt: new Date().toISOString(),
                 },

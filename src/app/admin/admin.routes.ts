@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { GalleryManagementComponent } from './components/gallery-management/gallery-management.component';
+import { TemplatesManagementComponent } from './components/templates-management/templates-management.component';
 import { DonationsComponent } from './components/donations/donations.component';
 import { AuthGuard } from '../shared/gaurds/auth.guard';
 import { RedirectIfAuthenticatedGuard } from '../shared/gaurds/authenticated.guard';
@@ -16,18 +16,13 @@ export const adminRoutes: Routes = [
     canActivate: [RedirectIfAuthenticatedGuard],
   },
   {
-    path: 'users',
-    component: AdminUsersComponent,
-    canActivate: [AuthGuard, AdminOnlyGuard],
-  },
-  {
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard],
   },
   {
-    path: 'gallery-management',
-    component: GalleryManagementComponent,
+    path: 'templates-management',
+    component: TemplatesManagementComponent,
     canActivate: [AuthGuard],
   },
   {

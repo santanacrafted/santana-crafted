@@ -40,7 +40,7 @@ export const templateReducer = createReducer(
     (state, { templateId, updatedFields }) => ({
       ...state,
       updateLoading: false,
-      events: state.templates.map((template) =>
+      templates: state.templates.map((template) =>
         template.id === templateId
           ? {
               ...template,

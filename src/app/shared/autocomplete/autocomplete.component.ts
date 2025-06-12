@@ -40,16 +40,13 @@ export class AutocompleteComponent implements OnInit {
   }
 
   onBlur() {
-    // Small delay to allow click on dropdown item
     setTimeout(() => {
       this.showDropdown = false;
-    }, 0);
+    }, 100);
   }
 
   onFocus() {
-    setTimeout(() => {
-      this.showDropdown = true;
-    }, 1000);
+    this.showDropdown = true;
     this.checkDropdownPosition();
   }
 
@@ -62,25 +59,16 @@ export class AutocompleteComponent implements OnInit {
   }
 
   checkDropdownPosition() {
-    // Delay to ensure rendering is done
     setTimeout(() => {
-      const inputElement = document.querySelector(
-        '#inputElement'
-      ) as HTMLElement;
+      const inputElement = this.inputElement.nativeElement;
 
-      console.log('Input element:', inputElement);
       if (inputElement) {
-        const rect = this.inputElement.nativeElement.getBoundingClientRect();
-        console.log('Input rect:', rect);
-        console.log(window.innerHeight);
-
+        const rect = inputElement.getBoundingClientRect();
         const spaceBelow = window.innerHeight - rect.bottom;
-        console.log('Space below input:', spaceBelow);
-        const dropdownHeight = 100; // estimate of dropdown height
+        const dropdownHeight = 200; // estimate of dropdown height
 
         // If space below is less than dropdown height, show upwards
         this.showAboveDropdown = spaceBelow < dropdownHeight;
-        console.log('Show above dropdown:', this.showAboveDropdown);
       }
     }, 0);
   }

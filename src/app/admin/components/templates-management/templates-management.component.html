@@ -13,7 +13,7 @@
   <!-- Add Album Button -->
   <div *ngIf="pageState === 'templates'" class="mb-6 text-right">
     <button
-      (click)="openAddAlbumPopup()"
+      (click)="pageState = 'add'"
       class="bg-[#005480] hover:bg-[#007a6f] text-white px-6 py-2 rounded-lg font-medium transition"
     >
       <i class="material-icons align-middle mr-1">add_photo_alternate</i>
@@ -67,102 +67,10 @@
     </div>
   </div>
 </section>
-
-<ng-template #editAlbumTemplate let-close="close" let-album="album">
-  <div
-    class="bg-white/60 backdrop-blur-lg shadow-xl w-[600px] rounded-2xl p-8 mb-12 border border-gray-200"
-  >
-    <!-- Close Button -->
-    <button
-      (click)="close()"
-      aria-label="Close"
-      class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold"
-    >
-      &times;
-    </button>
-
-    <h2 class="text-xl font-semibold mb-4 text-[#003d2e]">Edit Album</h2>
-
-    <form [formGroup]="editAlbumForm" (ngSubmit)="onUpdateAlbum(album.id)">
-      <!-- Cover Image -->
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Cover Image
-        </label>
-        <div
-          class="relative w-full h-48 border border-gray-300 rounded-md overflow-hidden"
-        >
-          <img
-            [src]="previewUrl || album.coverImage"
-            alt="Cover"
-            class="w-full h-full object-cover"
-          />
-          <input
-            type="file"
-            accept="image/*"
-            (change)="onCoverImageSelected($event)"
-            class="absolute inset-0 opacity-0 cursor-pointer"
-          />
-        </div>
-      </div>
-
-      <!-- Language Toggle -->
-      <div class="flex gap-2 mb-4">
-        <button
-          *ngFor="let lang of supportedLanguages"
-          type="button"
-          (click)="setActiveLang(lang)"
-          [ngClass]="{
-            'bg-blue-600 text-white': activeLang === lang,
-            'bg-gray-200 text-gray-700': activeLang !== lang
-          }"
-          class="px-3 py-1 rounded-md text-sm"
-        >
-          {{ lang.toUpperCase() }}
-        </button>
-      </div>
-
-      <div class="mb-4" formGroupName="name">
-        <label class="block text-sm font-medium text-gray-700">
-          Name ({{ activeLang.toUpperCase() }})
-        </label>
-
-        <ng-container *ngIf="getLangControl('name', activeLang) as control">
-          <input
-            type="text"
-            [formControl]="control"
-            class="w-full mt-1 p-2 border rounded-md"
-          />
-        </ng-container>
-      </div>
-
-      <div class="mb-6" formGroupName="description">
-        <label class="block text-sm font-medium text-gray-700">
-          Description ({{ activeLang.toUpperCase() }})
-        </label>
-
-        <ng-container
-          *ngIf="getLangControl('description', activeLang) as control"
-        >
-          <textarea
-            [formControl]="control"
-            rows="2"
-            class="w-full mt-1 p-2 border rounded-md"
-          ></textarea>
-        </ng-container>
-      </div>
-
-      <!-- Submit Button -->
-      <button
-        type="submit"
-        class="w-full bg-[#005480] hover:bg-[#003d2e] text-white font-medium py-2 rounded-md"
-      >
-        Save Changes
-      </button>
-    </form>
-  </div>
-</ng-template>
-<div *ngIf="pageState === 'add'" class="max-w-5xl mx-auto px-4 py-8">
+<div
+  *ngIf="pageState === 'add' || pageState === 'edit'"
+  class="max-w-5xl mx-auto px-4 py-8"
+>
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-2xl font-bold text-gray-800">Add New Template</h1>
@@ -179,9 +87,19 @@
   <!-- Form -->
   <form
     [formGroup]="templateForm"
-    (ngSubmit)="onCreateAlbum()"
+    (ngSubmit)="
+      pageState === 'add' ? onCreateAlbum() : onUpdateAlbum(templateToEdit.id)
+    "
     class="space-y-10"
   >
+    <!-- Global message -->
+    <div
+      *ngIf="templateForm.invalid && formSubmitted"
+      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6"
+    >
+      Please fill in the missing required fields.
+    </div>
+
     <!-- Template Info -->
     <div class="grid md:grid-cols-3 gap-x-6 gap-y-6 items-start">
       <!-- Template Name -->
@@ -195,6 +113,15 @@
             type="text"
             placeholder="e.g. Business Dashboard"
             class="w-full border rounded-lg px-4 py-2"
+            [ngClass]="{
+              'border-red-500':
+                templateForm.get('name')?.invalid &&
+                (templateForm.get('name')?.touched || formSubmitted),
+              'border-gray-300': !(
+                templateForm.get('name')?.invalid &&
+                (templateForm.get('name')?.touched || formSubmitted)
+              )
+            }"
           />
         </div>
 
@@ -206,8 +133,17 @@
           <select
             formControlName="category"
             class="w-full border rounded-lg px-4 py-2"
+            [ngClass]="{
+              'border-red-500':
+                templateForm.get('category')?.invalid &&
+                (templateForm.get('category')?.touched || formSubmitted),
+              'border-gray-300': !(
+                templateForm.get('category')?.invalid &&
+                (templateForm.get('category')?.touched || formSubmitted)
+              )
+            }"
           >
-            <option value="" disabled selected>Select a category</option>
+            <option value="" disabled>Select a category</option>
             <option value="Dashboard">Dashboard</option>
             <option value="Landing">Landing Page</option>
             <option value="Church">Church</option>
@@ -219,11 +155,15 @@
 
       <!-- Cover Photo -->
       <div class="flex flex-col col-span-1">
-        <label class="block text-sm font-medium mb-1 text-gray-700"
-          >Cover Photo</label
-        >
+        <label class="block text-sm font-medium mb-1 text-gray-700">
+          Cover Photo
+        </label>
         <div
-          class="relative w-full h-32 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden cursor-pointer hover:border-[#005480] hover:text-[#005480] transition"
+          class="relative w-full h-32 border-2 border-dashed rounded-lg overflow-hidden cursor-pointer hover:border-[#005480] hover:text-[#005480] transition"
+          [ngClass]="{
+            'border-red-500': !coverPhotoFile && formSubmitted,
+            'border-gray-300': coverPhotoFile || !formSubmitted
+          }"
         >
           <ng-container *ngIf="coverPhotoPreviewUrl; else placeholder">
             <!-- Cover image -->
@@ -235,6 +175,7 @@
 
             <!-- Overlay with text -->
             <div
+              (click)="coverPhotoInput.click()"
               class="absolute inset-0 bg-black/30 z-10 flex items-center justify-center text-white text-sm font-semibold opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
             >
               Click to select image
@@ -246,9 +187,9 @@
               class="flex flex-col items-center justify-center w-full h-full text-gray-400"
             >
               <span class="material-icons text-4xl mb-2">cloud_upload</span>
-              <span class="text-sm font-medium"
-                >Click to upload cover photo</span
-              >
+              <span class="text-sm font-medium">
+                Click to upload cover photo
+              </span>
             </div>
           </ng-template>
 
@@ -272,15 +213,27 @@
           rows="3"
           placeholder="Brief description..."
           class="w-full border rounded-lg px-4 py-2"
+          [ngClass]="{
+            'border-red-500':
+              templateForm.get('description')?.invalid &&
+              (templateForm.get('description')?.touched || formSubmitted),
+            'border-gray-300': !(
+              templateForm.get('description')?.invalid &&
+              (templateForm.get('description')?.touched || formSubmitted)
+            )
+          }"
         ></textarea>
       </div>
     </div>
 
-    <!-- Keep rest of the code below unchanged -->
-
     <!-- Add Tiers CTA Section -->
     <div
-      class="border border-dashed border-[#005480] rounded-lg p-6 bg-white/80 shadow-sm"
+      class="border rounded-lg p-6 bg-white/80 shadow-sm"
+      [ngClass]="{
+        'border-red-500 border-dashed': tiers.length === 0 && formSubmitted,
+        'border-[#005480] border-dashed': tiers.length === 0 && !formSubmitted,
+        'border-[#005480]': tiers.length > 0
+      }"
     >
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
@@ -309,6 +262,14 @@
       >
         No tiers added yet. Click <span class="font-semibold">Add Tier</span> to
         get started.
+
+        <!-- Error message if required -->
+        <div
+          *ngIf="formSubmitted"
+          class="text-red-500 text-sm mt-2 font-medium"
+        >
+          Please add at least one tier.
+        </div>
       </div>
     </div>
 
@@ -339,6 +300,15 @@
             type="text"
             placeholder="e.g. Basic, Premium"
             class="w-full border rounded-lg px-4 py-2"
+            [ngClass]="{
+              'border-red-500':
+                tier.get('tierName')?.invalid &&
+                (tier.get('tierName')?.touched || formSubmitted),
+              'border-gray-300': !(
+                tier.get('tierName')?.invalid &&
+                (tier.get('tierName')?.touched || formSubmitted)
+              )
+            }"
           />
         </div>
 

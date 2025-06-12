@@ -50,8 +50,6 @@ export class TemplateService {
     templateName: string,
     description: string,
     tiers: any[],
-    demoLink: string,
-    tutorialLink: string,
     coverPhotoFile: File,
     category: string
   ): Promise<{ templateId: string; coverPhotoUrl: string }> {
@@ -75,8 +73,6 @@ export class TemplateService {
       templateName,
       description,
       tiers,
-      demoLink,
-      tutorialLink,
       coverPhotoUrl,
       category,
     });
@@ -119,8 +115,6 @@ export class TemplateService {
     updatedDescription?: string,
     newCoverPhotoFile?: File,
     tiers?: any[],
-    demoLink?: string,
-    tutorialLink?: string,
     category?: string
   ): Promise<any> {
     const updateAlbumFn = httpsCallable(this.functions, 'updateTemplate');
@@ -142,10 +136,8 @@ export class TemplateService {
       templateId,
       updatedTitle,
       updatedDescription,
-      newCoverPhotoUrl,
       tiers,
-      demoLink,
-      tutorialLink,
+      newCoverPhotoUrl,
       category,
     });
   }

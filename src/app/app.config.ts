@@ -32,6 +32,7 @@ import { provideFunctions, getFunctions } from '@angular/fire/functions';
 import { templateReducer } from './state/templates/templates.reducer';
 import { analyticsReducer } from './state/analytics/analytics.reducer';
 import { TemplatesEffects } from './state/templates/templates.effect';
+import { AnalyticsEffects } from './state/analytics/analytics.effect';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -76,7 +77,7 @@ export const appConfig = (
     provideStore(),
     provideState({ name: 'templateState', reducer: templateReducer }),
     provideState({ name: 'analyticsState', reducer: analyticsReducer }),
-    provideEffects([TemplatesEffects]),
+    provideEffects([TemplatesEffects, AnalyticsEffects]),
     provideStoreDevtools({}),
   ],
 });

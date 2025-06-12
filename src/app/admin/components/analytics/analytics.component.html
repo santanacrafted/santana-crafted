@@ -32,7 +32,8 @@
   </div>
 
   <ng-container *ngIf="analyticsData$ | async as data">
-    <ng-container *ngIf="data.geo?.rows as geoRows">
+    <!-- GEO -->
+    <ng-container *ngIf="data.geo as geo">
       <div class="bg-white rounded-xl shadow-md p-6 mt-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">🌍 Active Users by Country</h2>
@@ -49,7 +50,14 @@
         </p>
 
         <div *ngIf="!showGeoChart" class="overflow-x-auto">
-          <table class="min-w-full text-sm text-left">
+          <div
+            *ngIf="!geo.rows?.length"
+            class="text-sm text-gray-500 italic mb-4"
+          >
+            No data available for Active Users by Country.
+          </div>
+
+          <table *ngIf="geo.rows?.length" class="min-w-full text-sm text-left">
             <thead class="bg-gray-100 text-gray-700">
               <tr>
                 <th class="py-2 px-4">Country</th>
@@ -57,7 +65,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let row of geoRows" class="border-b hover:bg-gray-50">
+              <tr
+                *ngFor="let row of geo.rows"
+                class="border-b hover:bg-gray-50"
+              >
                 <td class="py-2 px-4">{{ row.dimensionValues[0].value }}</td>
                 <td class="py-2 px-4">{{ row.metricValues[0].value }}</td>
               </tr>
@@ -82,7 +93,8 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="data.source?.rows as sourceRows">
+    <!-- SOURCE -->
+    <ng-container *ngIf="data.source as source">
       <div class="bg-white rounded-xl shadow-md p-6 mt-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">🌐 Traffic Sources</h2>
@@ -94,13 +106,21 @@
           </button>
         </div>
         <p class="text-sm text-gray-600 mb-4">
-          Understand where your visitors are coming from. For example, "google /
-          organic" means users came via unpaid search, while "direct / none"
-          means they typed your URL or bookmarked it.
+          Understand where your visitors are coming from.
         </p>
 
         <div *ngIf="!showSourceChart" class="overflow-x-auto">
-          <table class="min-w-full text-sm text-left">
+          <div
+            *ngIf="!source.rows?.length"
+            class="text-sm text-gray-500 italic mb-4"
+          >
+            No data available for Traffic Sources.
+          </div>
+
+          <table
+            *ngIf="source.rows?.length"
+            class="min-w-full text-sm text-left"
+          >
             <thead class="bg-gray-100 text-gray-700">
               <tr>
                 <th class="py-2 px-4">Source / Medium</th>
@@ -109,7 +129,7 @@
             </thead>
             <tbody>
               <tr
-                *ngFor="let row of sourceRows"
+                *ngFor="let row of source.rows"
                 class="border-b hover:bg-gray-50"
               >
                 <td class="py-2 px-4">{{ row.dimensionValues[0].value }}</td>
@@ -136,7 +156,8 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="data.device?.rows as deviceRows">
+    <!-- DEVICE -->
+    <ng-container *ngIf="data.device as device">
       <div class="bg-white rounded-xl shadow-md p-6 mt-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">📱 Devices & Platforms</h2>
@@ -152,7 +173,17 @@
         </p>
 
         <div *ngIf="!showDeviceChart" class="overflow-x-auto">
-          <table class="min-w-full text-sm text-left">
+          <div
+            *ngIf="!device.rows?.length"
+            class="text-sm text-gray-500 italic mb-4"
+          >
+            No data available for Devices & Platforms.
+          </div>
+
+          <table
+            *ngIf="device.rows?.length"
+            class="min-w-full text-sm text-left"
+          >
             <thead class="bg-gray-100 text-gray-700">
               <tr>
                 <th class="py-2 px-4">Platform</th>
@@ -162,7 +193,7 @@
             </thead>
             <tbody>
               <tr
-                *ngFor="let row of deviceRows"
+                *ngFor="let row of device.rows"
                 class="border-b hover:bg-gray-50"
               >
                 <td class="py-2 px-4">{{ row.dimensionValues[0].value }}</td>
@@ -186,7 +217,8 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="data.userType?.rows as userTypeRows">
+    <!-- USER TYPE -->
+    <ng-container *ngIf="data.userType as userType">
       <div class="bg-white rounded-xl shadow-md p-6 mt-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">👥 New vs. Returning Users</h2>
@@ -198,12 +230,21 @@
           </button>
         </div>
         <p class="text-sm text-gray-600 mb-4">
-          This shows whether visitors are new or returning. Returning users may
-          indicate stronger engagement or interest.
+          This shows whether visitors are new or returning.
         </p>
 
         <div *ngIf="!showUserTypeChart" class="overflow-x-auto">
-          <table class="min-w-full text-sm text-left">
+          <div
+            *ngIf="!userType.rows?.length"
+            class="text-sm text-gray-500 italic mb-4"
+          >
+            No data available for New vs. Returning Users.
+          </div>
+
+          <table
+            *ngIf="userType.rows?.length"
+            class="min-w-full text-sm text-left"
+          >
             <thead class="bg-gray-100 text-gray-700">
               <tr>
                 <th class="py-2 px-4">User Type</th>
@@ -212,7 +253,7 @@
             </thead>
             <tbody>
               <tr
-                *ngFor="let row of userTypeRows"
+                *ngFor="let row of userType.rows"
                 class="border-b hover:bg-gray-50"
               >
                 <td class="py-2 px-4 capitalize">
@@ -237,7 +278,8 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="data.engagement?.rows as engagementRows">
+    <!-- ENGAGEMENT -->
+    <ng-container *ngIf="data.engagement as engagement">
       <div class="bg-white rounded-xl shadow-md p-6 mt-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">⏱️ User Engagement</h2>
@@ -257,22 +299,31 @@
           *ngIf="!showEngagementChart"
           class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm"
         >
-          <div class="bg-gray-50 p-4 rounded-md border">
-            <p class="text-gray-500">Average Engagement</p>
-            <p class="text-lg font-semibold">
-              {{
-                (engagementRows[0]?.metricValues[0]?.value || 0) / 60
-                  | number : "1.1-1"
-              }}
-              minutes
-            </p>
+          <div
+            *ngIf="!engagement.rows?.length"
+            class="text-sm text-gray-500 italic mb-4"
+          >
+            No data available for User Engagement.
           </div>
-          <div class="bg-gray-50 p-4 rounded-md border">
-            <p class="text-gray-500">Engaged Sessions</p>
-            <p class="text-lg font-semibold">
-              {{ engagementRows[0]?.metricValues[1]?.value || 0 }}
-            </p>
-          </div>
+
+          <ng-container *ngIf="engagement.rows?.length">
+            <div class="bg-gray-50 p-4 rounded-md border">
+              <p class="text-gray-500">Average Engagement</p>
+              <p class="text-lg font-semibold">
+                {{
+                  (engagement.rows[0]?.metricValues[0]?.value || 0) / 60
+                    | number : "1.1-1"
+                }}
+                minutes
+              </p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-md border">
+              <p class="text-gray-500">Engaged Sessions</p>
+              <p class="text-lg font-semibold">
+                {{ engagement.rows[0]?.metricValues[1]?.value || 0 }}
+              </p>
+            </div>
+          </ng-container>
         </div>
 
         <div *ngIf="showEngagementChart" class="mt-4">
@@ -292,7 +343,8 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="data.pages?.rows as pageRows">
+    <!-- PAGES -->
+    <ng-container *ngIf="data.pages as pages">
       <div class="bg-white rounded-xl shadow-md p-6 mt-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">📄 Top Pages</h2>
@@ -309,7 +361,17 @@
         </p>
 
         <div *ngIf="!showPageChart" class="overflow-x-auto">
-          <table class="min-w-full text-sm text-left">
+          <div
+            *ngIf="!pages.rows?.length"
+            class="text-sm text-gray-500 italic mb-4"
+          >
+            No data available for Top Pages.
+          </div>
+
+          <table
+            *ngIf="pages.rows?.length"
+            class="min-w-full text-sm text-left"
+          >
             <thead class="bg-gray-100 text-gray-700">
               <tr>
                 <th class="py-2 px-4">Page Path</th>
@@ -318,7 +380,7 @@
             </thead>
             <tbody>
               <tr
-                *ngFor="let row of pageRows"
+                *ngFor="let row of pages.rows"
                 class="border-b hover:bg-gray-50"
               >
                 <td class="py-2 px-4 text-blue-600">
@@ -347,7 +409,8 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="data.events?.rows as eventRows">
+    <!-- EVENTS -->
+    <ng-container *ngIf="data.events as events">
       <div class="bg-white rounded-xl shadow-md p-6 mt-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">🧩 User Events</h2>
@@ -364,7 +427,17 @@
         </p>
 
         <div *ngIf="!showEventChart" class="overflow-x-auto">
-          <table class="min-w-full text-sm text-left">
+          <div
+            *ngIf="!events.rows?.length"
+            class="text-sm text-gray-500 italic mb-4"
+          >
+            No data available for User Events.
+          </div>
+
+          <table
+            *ngIf="events.rows?.length"
+            class="min-w-full text-sm text-left"
+          >
             <thead class="bg-gray-100 text-gray-700">
               <tr>
                 <th class="py-2 px-4">Event Name</th>
@@ -373,7 +446,7 @@
             </thead>
             <tbody>
               <tr
-                *ngFor="let row of eventRows"
+                *ngFor="let row of events.rows"
                 class="border-b hover:bg-gray-50"
               >
                 <td class="py-2 px-4 capitalize">

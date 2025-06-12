@@ -15,8 +15,6 @@ export const addTemplate = createAction(
     description: string;
     coverPhotoFile: File;
     tiers: string[];
-    demoLink: string;
-    tutorialLink: string;
     category: string;
   }>()
 );
@@ -34,9 +32,7 @@ export const updateTemplate = createAction(
     updatedTitle: string;
     updatedDescription: string;
     newCoverPhotoFile?: File;
-    tiers?: string[];
-    demoLink?: string;
-    tutorialLink?: string;
+    tiers?: any[];
     category?: string;
   }>()
 );
