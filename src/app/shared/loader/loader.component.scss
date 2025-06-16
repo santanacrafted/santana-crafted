@@ -1,0 +1,52 @@
+.loading-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 100px auto;
+  }
+  
+  .loading-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    z-index: 2;
+  }
+  
+  .loading-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 120px;
+    margin: -60px 0 0 -60px;
+    animation: rotate 1.5s linear infinite;
+  }
+  
+  .loading-circle .dot {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: rgb(224, 225, 51);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    margin: -8px;
+  }
+  
+  .loading-circle .dot:nth-child(1) { transform: rotate(0deg) translate(60px); }
+  .loading-circle .dot:nth-child(2) { transform: rotate(45deg) translate(60px); }
+  .loading-circle .dot:nth-child(3) { transform: rotate(90deg) translate(60px); }
+  .loading-circle .dot:nth-child(4) { transform: rotate(135deg) translate(60px); }
+  .loading-circle .dot:nth-child(5) { transform: rotate(180deg) translate(60px); }
+  .loading-circle .dot:nth-child(6) { transform: rotate(225deg) translate(60px); }
+  .loading-circle .dot:nth-child(7) { transform: rotate(270deg) translate(60px); }
+  .loading-circle .dot:nth-child(8) { transform: rotate(315deg) translate(60px); }
+  
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

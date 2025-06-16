@@ -41,10 +41,6 @@ export class AppComponent {
         { label: 'FOOTER_LEGAL_LINK_2', path: '/terms' },
       ],
     },
-    {
-      title: 'Admin',
-      links: [{ label: 'Login', path: '/admin/login' }],
-    },
   ];
 
   constructor(

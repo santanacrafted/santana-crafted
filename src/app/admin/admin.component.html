@@ -1,14 +1,16 @@
-<section class="flex h-screen bg-gray-100">
+<section class="flex flex-col-reverse md:flex-col h-screen bg-gray-100">
   <!-- Sidebar -->
   <aside
     *ngIf="user$ | async"
-    [ngClass]="isSidebarCollapsed ? 'w-20 items-center' : 'w-full md:w-64'"
-    class="h-screen fixed left-0 top-0 bottom-0 bg-[#005480] text-white flex flex-col justify-between p-4 transition-all duration-300 ease-in-out z-50"
+    [ngClass]="
+      isSidebarCollapsed ? 'md:w-20 md:items-center' : 'w-full md:w-64'
+    "
+    class="md:h-screen h-auto md:fixed left-0 top-0 bottom-0 bg-[#013d2e] text-white flex md:flex-col md:justify-between p-4 transition-all duration-300 ease-in-out z-50"
   >
     <!-- Top: Brand & Toggle -->
-    <div>
+    <div class="w-full">
       <div
-        class="flex items-center justify-between mb-10 w-full"
+        class="flex items-center justify-between md:mb-10 w-full"
         [ngClass]="{ '!justify-center': isSidebarCollapsed }"
       >
         <ng-container *ngIf="!isSidebarCollapsed">
@@ -20,48 +22,59 @@
           </button>
         </ng-container>
         <ng-container *ngIf="isSidebarCollapsed">
-          <button (click)="toggleSidebar()" class="text-white">
+          <button (click)="toggleSidebar()" class="text-white hidden md:block">
             <span class="material-icons">menu</span>
           </button>
         </ng-container>
       </div>
 
       <!-- Navigation Links -->
-      <nav class="flex flex-col gap-3 text-sm w-full">
+      <nav
+        class="flex flex-row md:flex-col justify-evenly md:justify-start md:items-start gap-0 md:gap-3 text-sm w-full"
+      >
         <a
           routerLink="/admin/dashboard"
-          routerLinkActive="bg-white text-[#005480] font-semibold"
+          routerLinkActive="bg-white text-[#013d2e] font-semibold"
           [routerLinkActiveOptions]="{ exact: true }"
-          class="nav-item"
+          class="nav-item flex items-center justify-center w-12 h-12 md:w-full md:h-auto md:justify-start md:px-4"
         >
           <span class="material-icons">dashboard</span>
-          <span *ngIf="!isSidebarCollapsed">Dashboard</span>
+          <span *ngIf="!isSidebarCollapsed" class="ml-2">Dashboard</span>
         </a>
         <a
           routerLink="/admin/templates-management"
-          routerLinkActive="bg-white text-[#005480] font-semibold"
-          class="nav-item"
+          routerLinkActive="bg-white text-[#013d2e] font-semibold"
+          class="nav-item flex items-center justify-center w-12 h-12 md:w-full md:h-auto md:justify-start md:px-4"
         >
           <span class="material-icons">collections</span>
-          <span *ngIf="!isSidebarCollapsed">Templates Management</span>
+          <span *ngIf="!isSidebarCollapsed" class="ml-2"
+            >Templates Management</span
+          >
         </a>
         <a
           routerLink="/admin/analytics"
-          routerLinkActive="bg-white text-[#005480] font-semibold"
-          class="nav-item"
+          routerLinkActive="bg-white text-[#013d2e] font-semibold"
+          class="nav-item flex items-center justify-center w-12 h-12 md:w-full md:h-auto md:justify-start md:px-4"
         >
           <span class="material-icons">insights</span>
-          <span *ngIf="!isSidebarCollapsed">Analytics</span>
+          <span *ngIf="!isSidebarCollapsed" class="ml-2">Analytics</span>
+        </a>
+        <a
+          routerLink="/admin/profile"
+          routerLinkActive="bg-white text-[#013d2e] font-semibold"
+          class="md:!hidden nav-item flex items-center justify-center w-12 h-12 md:w-full md:h-auto md:justify-start md:px-4"
+        >
+          <span class="material-icons text-3xl">account_circle</span>
         </a>
       </nav>
     </div>
 
     <!-- Bottom: Logout -->
-    <div>
+    <div class="hidden md:block">
       <div class="relative" *ngIf="userInfo">
         <button
           (click)="showUserMenu = !showUserMenu"
-          class="w-full text-white border-t border-white/20 pt-3 flex items-center justify-left gap-2 focus:outline-none"
+          class="w-full text-white md:border-t md:border-white/20 md:pt-3 flex items-center justify-left gap-2 focus:outline-none"
         >
           <span class="material-icons text-3xl">account_circle</span>
           <ng-container *ngIf="!isSidebarCollapsed">
@@ -120,9 +133,9 @@
     class="transition-all duration-300 ease-in-out flex-1 overflow-y-auto"
     [ngClass]="[
       (user$ | async) && isSidebarCollapsed
-        ? 'ml-20'
+        ? 'md:ml-20'
         : (user$ | async)
-        ? 'ml-64'
+        ? 'md:ml-64'
         : ''
     ]"
   >

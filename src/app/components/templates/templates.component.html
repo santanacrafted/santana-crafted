@@ -3,7 +3,6 @@
     <h2 class="text-4xl font-bold text-[#003d2e] mb-6 text-center">
       Explore Our Templates
     </h2>
-
     <!-- Sticky Filter Wrapper -->
     <div
       #filterBar
@@ -74,6 +73,7 @@
     </div>
 
     <div class="max-w-7xl mx-auto">
+      <app-loader [isLoading]="selectTemplatesLoading$ | async"></app-loader>
       <!-- Template Cards -->
       <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
         <div

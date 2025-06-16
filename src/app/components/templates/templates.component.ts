@@ -29,11 +29,12 @@ import {
   selectUpdateTemplateLoading,
 } from '../../state/templates/templates.selector';
 import { loadTemplates } from '../../state/templates/templates.actions';
+import { LoaderComponent } from '../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-templates',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, LoaderComponent],
   templateUrl: './templates.component.html',
   styleUrl: './templates.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
